@@ -2,36 +2,16 @@
 class Migration_45 extends Doctrine_Migration_Base {
 
     public function up() {
-
-        $columns = array(
-            'id' => array(
-                'type' => 'int(10) unsigned AUTO_INCREMENT',
-                'notnull' => 1,
-                'primary' => 1
-            ),
-            'tramite_id' => array(
-                'type' => 'int'
-            ),
-            'tarea_id' => array(
-                'type' => 'int'
-            ),
-            'request' => array(
-                'type' => 'text'
-            ),
-            'procesado' => array(
-                'type' => 'tinyint'
-            )
-        );
-
-        $this->createTable('cola_continuar_tramite', $columns, array('primary' => array('id')));
+        $this->addColumn('tarea', 'es_final', 'boolean', null, array('notnull'=>1,'default'=>0));
     }
 
     public function postUp() {
+        $q = Doctrine_Manager::getInstance()->getCurrentConnection();
+        $q->execute("UPDATE tarea SET es_final=0");
     }
 
     public function down() {
-        $this->dropTable('cola_continuar_tramite');
+        $this->removeColumn('tarea', 'es_final');
     }
-
 }
 ?>

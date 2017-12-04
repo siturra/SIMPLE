@@ -2,41 +2,20 @@
 class Migration_44 extends Doctrine_Migration_Base {
 
     public function up() {
-
-        $columns = array(
-            'id' => array(
-                'type' => 'int(10) unsigned AUTO_INCREMENT',
-                'notnull' => 1,
-                'primary' => 1
-            ),
-            'id_cuenta_origen' => array(
-                'type' => 'int(10)'
-            ),
-            'id_cuenta_destino' => array(
-                'type' => 'int(10)'
-            ),
-            'id_proceso' => array(
-                'type' => 'int(10)'
-            )
-        );
-
-        $this->createTable('proceso_cuenta', $columns, array('primary' => array('id')));
+        $this->addColumn('proceso', 'version', 'integer', null, array('notnull'=>1,'default'=>1));
+        $this->addColumn('proceso', 'root', 'integer', null, array());
+        $this->addColumn('proceso', 'estado', 'varchar', null, array('notnull'=>1,'default'=>'public'));
     }
 
     public function postUp() {
-        $this->createForeignKey( 'proceso_cuenta', 'fk_trigger_proceso2', array(
-                'local'        => 'id_proceso',
-                'foreign'      => 'id',
-                'foreignTable' => 'proceso',
-                'onUpdate'     => 'CASCADE',
-                'onDelete'     => 'CASCADE'
-            )
-        );
+        $q = Doctrine_Manager::getInstance()->getCurrentConnection();
+        $q->execute("UPDATE proceso p SET p.version=1, p.estado='public', p.root=p.id");
     }
 
     public function down() {
-        $this->dropTable('proceso_cuenta');
+        $this->removeColumn('proceso', 'version');
+        $this->removeColumn('proceso', 'root');
+        $this->removeColumn('proceso', 'estado');
     }
-
 }
 ?>

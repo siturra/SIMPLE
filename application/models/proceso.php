@@ -9,7 +9,13 @@ class Proceso extends Doctrine_Record {
         $this->hasColumn('height');     //alto de la grilla
         $this->hasColumn('cuenta_id');
         $this->hasColumn('proc_cont');
+        $this->hasColumn('categoria_id');
+        $this->hasColumn('destacado');
+        $this->hasColumn('icon_ref');
         $this->hasColumn('activo');
+        $this->hasColumn('version');
+        $this->hasColumn('root');
+        $this->hasColumn('estado');
     }
 
     function setUp() {
@@ -100,7 +106,7 @@ class Proceso extends Doctrine_Record {
             $element->top=$t->posy;
             $element->start=$t->inicial;
             $element->externa=$t->externa;
-            //$element->stop=$t->final;
+            $element->stop=$t->final;
             $modelo->elements[]=clone $element;
         }
         
@@ -145,6 +151,8 @@ class Proceso extends Doctrine_Record {
 
         $proceso->Acciones;
         $proceso->Documentos;
+        $proceso->Admseguridad;
+        $proceso->Suscriptores;
 
         $object=$proceso->toArray();        
         $object['Conexiones']=$proceso->getConexiones()->toArray();
@@ -196,6 +204,7 @@ class Proceso extends Doctrine_Record {
 
         }
 
+        log_message('info','Se crean acciones de nuevo proceso importado', FALSE);
         //Creamos las acciones
         foreach($json->Acciones as $f){
             $proceso->Acciones[$f->id]=new Accion();
@@ -204,8 +213,8 @@ class Proceso extends Doctrine_Record {
                     $proceso->Acciones[$f->id]->{$keyf}=$f_attr;
                 }
             }
-
         }
+        log_message('info','Acciones creadas', FALSE);
 
         //Completamos el proceso y sus tareas
         foreach($json as $keyp=>$p_attr){
@@ -234,20 +243,21 @@ class Proceso extends Doctrine_Record {
                                 if($ev->paso_id)$evento->Paso=$tarea->Pasos[$ev->paso_id];
                                 $tarea->Eventos[]=$evento;
                             }
-                        }elseif($keyt != 'id' && $keyt != 'proceso_id' && $keyt != 'Proceso' && $keyt != 'grupos_usuarios'){
+                        }elseif($keyt != 'id' && $keyt != 'proceso_id' && $keyt != 'Proceso'){// && $keyt != 'grupos_usuarios'){
                             $tarea->{$keyt}=$t_attr;
                         }
                     }
 
                     $proceso->Tareas[$t->id]=$tarea;
                 }
-            }elseif($keyp=='Formularios' || $keyp=='Acciones' || $keyp=='Documentos' || $keyp=='Conexiones'){
+            }elseif($keyp=='Formularios' || $keyp=='Acciones' || $keyp=='Documentos' || $keyp=='Conexiones' || $keyp=='Admseguridad' || $keyp=='Suscriptores'){
 
             }elseif($keyp != 'id' && $keyp != 'cuenta_id'){
                 $proceso->{$keyp} = $p_attr;
             }
         }
 
+        log_message('info','Formularios creados', FALSE);
 
         //Hacemos las conexiones
         foreach($json->Conexiones as $c){
@@ -261,7 +271,31 @@ class Proceso extends Doctrine_Record {
             }
         }
 
-        //print_r($proceso->toArray());
+        log_message('info','Conexiones creadas', FALSE);
+
+        //Creamos las configuraciones de seguridad
+        /*foreach($json->Admseguridad as $f){
+            log_message('info','Admseguridad id: '.$f->id, FALSE);
+            $proceso->Admseguridad[$f->id]=new Seguridad();
+            log_message('info','Completando', FALSE);
+            foreach($f as $keyf => $f_attr){
+                if($keyf != 'id' && $keyf != 'proceso_id' && $keyf != 'Proceso'){
+                    $proceso->Admseguridad[$f->id]->{$keyf}=$f_attr;
+                }
+            }
+        }
+        log_message('info','Seguridad creadas', FALSE);*/
+
+        //Creamos las configuraciones de suscriptores
+        /*foreach($json->Suscriptores as $f){
+            $proceso->Suscriptores[$f->id]=new Suscriptor();
+            foreach($f as $keyf => $f_attr){
+                if($keyf != 'id' && $keyf != 'proceso_id' && $keyf != 'Proceso'){
+                    $proceso->Suscriptores[$f->id]->{$keyf}=$f_attr;
+                }
+            }
+        }
+        log_message('info','Suscriptores creados', FALSE);*/
 
         return $proceso;
 
@@ -399,7 +433,8 @@ class Proceso extends Doctrine_Record {
     public function toPublicArray(){
         $publicArray=array(
             'id'=>(int)$this->id,
-            'nombre'=>$this->nombre
+            'nombre'=>$this->nombre,
+            'version'=>$this->version
         );
         
         return $publicArray;
@@ -419,16 +454,22 @@ class Proceso extends Doctrine_Record {
     	}
     	return $result;
     }
-    
-    public function getCamposReporteHeaders(){
-    	
+
+    public function getCamposReporteHeaders() {
+
     	$campos = $this->getCampos();
-    	
-    	foreach($campos as $c)
-    		$result[]=$c->nombre.' - '.$c->etiqueta;
-    	
+
+    	foreach ($campos as $c) {
+            if ($c->tipo == 'maps') {
+                $result[] = $c->nombre . ' - ' . $c->etiqueta;
+                $result[] = $c->nombre . '->latitude - ' . $c->etiqueta;
+                $result[] = $c->nombre . '->longitude - ' . $c->etiqueta;
+                $result[] = $c->nombre . '->address - ' . $c->etiqueta;
+            } else {
+                $result[] = $c->nombre . ' - ' . $c->etiqueta;
+            }
+        }
     	return $result;
-    	
     }
     
     public function getTramitesCompletos(){
@@ -454,7 +495,7 @@ class Proceso extends Doctrine_Record {
     }
 
     // Elimina los procesos de manera logica
-    public function delete($proceso_id) {
+    public function delete_logico($proceso_id) {
 
         log_message('info', 'delete test ($proceso_id [' . $proceso_id . '])');
 
@@ -464,4 +505,67 @@ class Proceso extends Doctrine_Record {
             ->execute();
     }
 
+    public function findIdProcesoActivo($root, $cuenta_id) {
+
+        log_message('info', 'findIdProcesoActivo ($root [ ' . $root . '], $cuenta_id [' . $cuenta_id . '])');
+        
+        $procesos = Doctrine_Query::create()
+            ->from('Proceso p, p.Cuenta c')
+            ->where('(p.root = ? OR p.id = ?) AND p.estado="public" AND c.id = ?', array($root, $root, $cuenta_id))
+            ->execute();
+
+        return $procesos[0];
+    }
+
+    public function findProcesosArchivados($root){
+        log_message('Info', 'Buscando archivados para proceso root: '.$root);
+
+        $procesos = Doctrine_Query::create()
+            ->from('Proceso p')
+            ->where('(p.root = ? OR p.id = ?)', array($root, $root))
+            ->orderBy('p.version desc')
+            ->execute();
+
+        log_message('Info', 'Se ejecuta query procesos archivados');
+
+        $data = array();
+        foreach ($procesos as $proceso_rel){
+            $data[] = array(
+                "id" => $proceso_rel->id,
+                "nombre" => $proceso_rel->nombre.'-'.$proceso_rel->estado,
+                "version" => $proceso_rel->version
+            );
+        }
+        return $data;
+    }
+
+    public function findDraftProceso($root, $cuenta_id){
+
+        $draft = Doctrine_Query::create()
+            ->from('Proceso p, p.Cuenta c')
+            ->where('(p.root = ? OR p.id = ?) AND p.estado="draft" AND c.id = ?', array($root, $root, $cuenta_id))
+            ->execute();
+
+        return $draft[0];
+    }
+
+    public function findMaxVersion($root, $cuenta_id){
+
+        $sql = "select MAX(p.version) as version from proceso p where p.cuenta_id = $cuenta_id and (p.root = $root or p.id = $root);";
+
+        $stmn = Doctrine_Manager::getInstance()->connection();
+        $result = $stmn->execute($sql)
+            ->fetchAll();
+        return $result[0]['version'];
+    }
+
+    public function getTareasProceso(){
+        $tareas=Doctrine_Query::create()
+            ->from('Tarea t, t.Proceso p')
+            ->where('p.id = ?',$this->id)
+            ->execute();
+
+        return $tareas;
+
+    }
 }

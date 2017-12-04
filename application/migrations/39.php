@@ -2,44 +2,22 @@
 class Migration_39 extends Doctrine_Migration_Base {
 
     public function up() {
+        $this->addColumn('cuenta', 'ambiente', 'varchar', null, array('notnull'=>1, 'default'=>'prod'));
+        $this->addColumn('cuenta', 'vinculo_produccion', 'int(10)' , null, array('notnull' => 0,'unsigned'=>1));
 
-        $columns = array(
-            'id' => array(
-                'type' => 'int(10) unsigned AUTO_INCREMENT',
-                'notnull' => 1,
-                'primary' => 1
-            ),
-            'institucion' => array(
-                'type' => 'varchar(128)'
-            ),
-            'servicio' => array(
-                'type' => 'varchar(128)'
-            ),
-            'extra' => array(
-                'type' => 'text'
-            ),
-            'proceso_id' => array(
-                'type' => 'int'
-            )
-        );
-
-        $this->createTable('seguridad', $columns, array('primary' => array('id')));
+        $this->addIndex( 'cuenta', 'vinculo_produccion', array(
+            'fields'=>array('vinculo_produccion')
+        ));
     }
 
     public function postUp() {
-        $this->createForeignKey( 'seguridad', 'fk_trigger_proceso2', array(
-                'local'        => 'proceso_id',
-                'foreign'      => 'id',
-                'foreignTable' => 'proceso',
-                'onUpdate'     => 'CASCADE',
-                'onDelete'     => 'CASCADE'
-            )
-        );
+        $q = Doctrine_Manager::getInstance()->getCurrentConnection();
+        $q->execute("UPDATE cuenta SET ambiente='prod';");
     }
 
     public function down() {
-        $this->dropTable('seguridad');
+        $this->removeColumn('cuenta', 'ambiente');
+        $this->removeColumn('cuenta', 'vinculo_produccion');
     }
-
 }
 ?>

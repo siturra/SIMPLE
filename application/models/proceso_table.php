@@ -2,26 +2,72 @@
 
 class ProcesoTable extends Doctrine_Table {
 
-    public function findProcesosDisponiblesParaIniciar($usuario_id,$cuenta='localhost',$orderby='id',$direction='desc'){
-        $usuario=Doctrine::getTable('Usuario')->find($usuario_id);
+    public function findProcesosDisponiblesParaIniciar($usuario_id, $cuenta = 'localhost', $orderby = 'id', $direction = 'desc') {
+        $usuario = Doctrine::getTable('Usuario')->find($usuario_id);
 
-        $query=Doctrine_Query::create()
+        $cuenta = Doctrine::getTable('Cuenta')->find(Cuenta::cuentaSegunDominio()->id); // UsuarioBackendSesion::usuario()->cuenta_id);
+        $estados = "'public'";
+        if ($cuenta->ambiente == 'dev') {
+            $estados = $estados.", 'draft'";
+        } else {
+            log_message('debug', '$cuenta->id: ' . $cuenta->id);
+            $cuenta_dev = $cuenta->getAmbienteDev($cuenta->id);
+            log_message('debug', 'cuenta_dev: ' . $cuenta_dev);
+            log_message('debug', 'cuenta_dev: ' . count($cuenta_dev));
+            if (count($cuenta_dev) == 0) {
+                $estados = $estados.", 'draft'";
+            }
+        }
+
+        log_message('debug', 'estados: ' . $estados);
+
+        $query = Doctrine_Query::create()
                 ->from('Proceso p, p.Cuenta c, p.Tareas t')
-                ->where('p.activo=1 AND t.inicial = 1')
+                ->where('p.activo = 1 AND p.estado IN (' . $estados . ') AND t.inicial = 1')
                 //Si el usuario tiene permisos de acceso
                 //->andWhere('(t.acceso_modo="grupos_usuarios" AND u.id = ?) OR (t.acceso_modo = "registrados") OR (t.acceso_modo = "claveunica") OR (t.acceso_modo="publico")',$usuario->id)
                 //Si la tarea se encuentra activa
                 ->andWhere('1!=(t.activacion="no" OR ( t.activacion="entre_fechas" AND ((t.activacion_inicio IS NOT NULL AND t.activacion_inicio>NOW()) OR (t.activacion_fin IS NOT NULL AND NOW()>t.activacion_fin) )))')
-                ->orderBy($orderby.' '.$direction);
+                ->orderBy($orderby . ' ' . $direction);
 
-        if($cuenta!='localhost')
-            $query->andWhere('c.nombre = ?',$cuenta->nombre);
+        if ($cuenta != 'localhost')
+            $query->andWhere('c.nombre = ?', $cuenta->nombre);
 
-        $procesos=$query->execute();
+        $procesos = $query->execute();
 
-        //Chequeamos los permisos de acceso
-        foreach($procesos as $key=>$p)
-            if(!$p->canUsuarioListarlo($usuario_id))
+        log_message('debug', '$cuenta->nombre [' . $cuenta->nombre . ']');
+
+        // Chequeamos los permisos de acceso
+        foreach ($procesos as $key=>$p)
+            if (!$p->canUsuarioListarlo($usuario_id))
+                unset($procesos[$key]);
+
+        return $procesos;
+    }
+
+    public function findProcesosDisponiblesParaIniciarByCategoria($usuario_id, $categoria_id, $cuenta='localhost',$orderby='id', $direction = 'desc') {
+
+        $usuario = Doctrine::getTable('Usuario')->find($usuario_id);
+
+        $query = Doctrine_Query::create()
+            ->from('Proceso p, p.Cuenta c, p.Tareas t')
+            ->where('t.inicial = 1 AND p.categoria_id = ' . $categoria_id)
+            // Si el usuario tiene permisos de acceso
+            // ->andWhere('(t.acceso_modo="grupos_usuarios" AND u.id = ?) OR (t.acceso_modo = "registrados") OR (t.acceso_modo = "claveunica") OR (t.acceso_modo="publico")',$usuario->id)
+            // Si la tarea se encuentra activa
+            ->andWhere('1!=(t.activacion="no" OR ( t.activacion="entre_fechas" AND ((t.activacion_inicio IS NOT NULL AND t.activacion_inicio>NOW()) OR (t.activacion_fin IS NOT NULL AND NOW()>t.activacion_fin) )))')
+            ->orderBy($orderby . ' ' . $direction);
+
+        if ($cuenta != 'localhost')
+            $query->andWhere('c.nombre = ?', $cuenta->nombre);
+
+        log_message('debug', '$cuenta->nombre [' . $cuenta->nombre . ']');
+
+        $procesos = $query->execute();
+
+        // Chequeamos los permisos de acceso
+        foreach ($procesos as $key=>$p)
+            if (!$p->canUsuarioListarlo($usuario_id))
                 unset($procesos[$key]);
 
         return $procesos;
