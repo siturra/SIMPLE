@@ -546,23 +546,21 @@ class Procesos extends MY_BackendController {
 
     }
 
-    public function importar(){
+    public function importar() {
 
-        $file_path=$_FILES['archivo']['tmp_name'];
+        $file_path = $_FILES['archivo']['tmp_name'];
 
-        if($file_path){
-            $input=file_get_contents($_FILES['archivo']['tmp_name']);
-
-            $proceso=Proceso::importComplete($input);
-
+        if ($file_path) {
+            $input = file_get_contents($_FILES['archivo']['tmp_name']);
+            $proceso = Proceso::importComplete($input, TRUE);
             $proceso->save();
 
+            $this->migrarSeguridadAcciones($proceso);
+            $this->migrarSuscriptores($proceso);
 
         }
 
         redirect($_SERVER['HTTP_REFERER']);
-
-
     }
 
     public function publicar($proceso_draft_id){
@@ -654,10 +652,10 @@ class Procesos extends MY_BackendController {
             $proceso->save();
             log_message('debug', 'post a $proceso->save();');
 
-            $this->migrarGrupos($proceso, $cuenta);
-
             $this->migrarSeguridadAcciones($proceso);
             $this->migrarSuscriptores($proceso);
+
+            $this->migrarGrupos($proceso, $cuenta);
 
         }
 
@@ -717,23 +715,21 @@ class Procesos extends MY_BackendController {
     }
 
     private function migrarSeguridadAcciones($proceso) {
-        //asignar grupos de usuario de producción por cada tarea
         log_message("INFO", "Revisando seguridad para proceso id ".$proceso->id, FALSE);
         $acciones = $proceso->Acciones;
         foreach ($acciones as $accion){
             if($accion->tipo == 'rest' || $accion->tipo == 'soap' || $accion->tipo == 'callback'){
                 if(isset($accion->extra->idSeguridad) && strlen($accion->extra->idSeguridad) > 0 ){
-                    $seguridad = Doctrine::getTable('Seguridad')->find($accion->extra->idSeguridad);
-                    log_message("INFO", "Seguridad recuperada con id ".$seguridad->id, FALSE);
-                    $new_seguridad = new Seguridad();
-                    $new_seguridad->institucion = $seguridad->institucion;
-                    $new_seguridad->servicio = $seguridad->servicio;
-                    $new_seguridad->extra = $seguridad->extra;
-                    $new_seguridad->proceso_id = $proceso->id;
-                    $new_seguridad->save();
-                    log_message("INFO", "Asignando nueva seguridad con id ".$new_seguridad->id, FALSE);
                     $extra_accion = $accion->extra;
-                    $extra_accion->idSeguridad = $new_seguridad->id;
+                    $extra_accion->idSeguridad = $proceso->Admseguridad[$accion->extra->idSeguridad]->id;
+                    $accion->extra = $extra_accion;
+                    log_message("INFO", "Guardando accion id ".$accion->id, FALSE);
+                    $accion->save();
+                }
+            }elseif ($accion->tipo == 'iniciar_tramite'){
+                if(isset($accion->extra->tareaRetornoSel) && strlen($accion->extra->tareaRetornoSel) > 0 ){
+                    $extra_accion = $accion->extra;
+                    $extra_accion->tareaRetornoSel = $proceso->Tareas[$accion->extra->tareaRetornoSel]->id;
                     $accion->extra = $extra_accion;
                     log_message("INFO", "Guardando accion id ".$accion->id, FALSE);
                     $accion->save();
@@ -743,38 +739,26 @@ class Procesos extends MY_BackendController {
     }
 
     private function migrarSuscriptores($proceso) {
-        //asignar grupos de usuario de producción por cada tarea
         log_message("INFO", "Revisando suscriptores para proceso id ".$proceso->id, FALSE);
+
+        $suscriptores = $proceso->Suscriptores;
+        foreach ($suscriptores as $suscriptor){
+            if(isset($suscriptor->extra->idSeguridad) && strlen($suscriptor->extra->idSeguridad) > 0 ){
+                $extra_suscriptor = $suscriptor->extra;
+                $extra_suscriptor->idSeguridad = $proceso->Admseguridad[$suscriptor->extra->idSeguridad]->id;//$new_seguridad->id;
+                $suscriptor->extra = $extra_suscriptor;
+                log_message("INFO", "Guardando suscriptor id ".$suscriptor->id, FALSE);
+                $suscriptor->save();
+            }
+        }
+
         $acciones = $proceso->Acciones;
         foreach ($acciones as $accion){
             if($accion->tipo == 'webhook'){
                 if(isset($accion->extra->suscriptorSel) && count($accion->extra->suscriptorSel) > 0 ){
                     $suscriptores_seleccionados = array();
                     foreach ($accion->extra->suscriptorSel as $suscriptor){
-                        log_message("INFO", "Reemplazando suscriptor con id ".$suscriptor, FALSE);
-                        $suscriptor = Doctrine::getTable('Suscriptor')->find($suscriptor);
-                        $new_suscriptor = new Suscriptor();
-                        $new_suscriptor->institucion = $suscriptor->institucion;
-                        $extra = $suscriptor->extra;
-
-                        if(isset($extra->idSeguridad) && strlen($extra->idSeguridad) > 0 ) {
-                            $seguridad = Doctrine::getTable('Seguridad')->find($extra->idSeguridad);
-                            log_message("INFO", "Seguridad recuperada con id " . $seguridad->id, FALSE);
-                            $new_seguridad = new Seguridad();
-                            $new_seguridad->institucion = $seguridad->institucion;
-                            $new_seguridad->servicio = $seguridad->servicio;
-                            $new_seguridad->extra = $seguridad->extra;
-                            $new_seguridad->proceso_id = $proceso->id;
-                            $new_seguridad->save();
-                            log_message("INFO", "Asignando nueva seguridad con id " . $new_seguridad->id, FALSE);
-                            $extra->idSeguridad = $new_seguridad->id;
-                            $new_suscriptor->extra = $extra;
-                        }
-
-                        $new_suscriptor->proceso_id = $proceso->id;
-                        $new_suscriptor->save();
-                        $suscriptores_seleccionados[] = $new_suscriptor->id;
-
+                        $suscriptores_seleccionados[] = $proceso->Suscriptores[$suscriptor]->id;//$new_suscriptor->id;
                     }
                     $extra_accion = $accion->extra;
                     $extra_accion->suscriptorSel = $suscriptores_seleccionados;
