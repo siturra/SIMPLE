@@ -10,6 +10,9 @@
         <link href="<?= base_url() ?>assets/css/bootstrap.css" rel="stylesheet">
         <link href="<?= base_url() ?>assets/css/responsive.css" rel="stylesheet">
         <link href="<?= base_url() ?>assets/css/common.css?v=0.2" rel="stylesheet">
+
+        <link href="<?= base_url() ?>assets/css/frontend.css" rel="stylesheet">
+
         <link href="<?= base_url() ?>assets/js/bootstrap-datepicker/css/datepicker.css" rel="stylesheet">
         <link href="<?= base_url() ?>assets/js/handsontable/dist/handsontable.full.min.css" rel="stylesheet">
         <link href="<?= base_url() ?>assets/js/jquery.chosen/chosen.css" rel="stylesheet">
@@ -51,12 +54,11 @@
         <script type="text/javascript">
             var site_url = "<?= site_url() ?>";
             var base_url = "<?= base_url() ?>";
-            var site_key = "<?= sitekey() ?>";
 
             var onloadCallback = function() {
                 if ($('#form_captcha').length) {
                     grecaptcha.render("form_captcha", {
-                        sitekey : site_key
+                        sitekey : "6Le7zycUAAAAAKrvp-ndTrKRni3yeuCZQyrkJRfH"
                     });
                 }
             };
@@ -137,7 +139,7 @@
 
         <div id="main">
             <div class="container-fluid">
-        <?php $this->load->view($content) ?>
+        <?php $this->load->view($content) ?> 
             </div>
         </div>
 

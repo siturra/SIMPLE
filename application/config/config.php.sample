@@ -177,7 +177,7 @@ $config['directory_trigger']	= 'd'; // experimental not currently in use
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = 4;
 
 /*
 |--------------------------------------------------------------------------
@@ -422,13 +422,13 @@ $config['tiempoconfimacioncita']=30;
  * recaptcha sitekey
  *
  */
-$config['sitekey']='';
+$config['sitekey']='6Le7zycUAAAAAKrvp-ndTrKRni3yeuCZQyrkJRfH';
 
 /*
  * recaptcha Secret Key
  *
  */
-$config['secretkey']='';
+$config['secretkey']='6Le7zycUAAAAAIHDhvj6Z7yZwyCzrxddRJhpGNol';
 
 /*
  * Maps Key

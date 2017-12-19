@@ -9,7 +9,13 @@ class Proceso extends Doctrine_Record {
         $this->hasColumn('height');     //alto de la grilla
         $this->hasColumn('cuenta_id');
         $this->hasColumn('proc_cont');
+        $this->hasColumn('categoria_id');
+        $this->hasColumn('destacado');
+        $this->hasColumn('icon_ref');
         $this->hasColumn('activo');
+        $this->hasColumn('version');
+        $this->hasColumn('root');
+        $this->hasColumn('estado');
     }
 
     function setUp() {
@@ -41,7 +47,19 @@ class Proceso extends Doctrine_Record {
             'foreign'=>'proceso_id',
             'orderBy'=>'nombre asc'
         ));
-        
+
+        $this->hasMany('Seguridad as Admseguridad',array(
+            'local'=>'id',
+            'foreign'=>'proceso_id',
+            'orderBy'=>'institucion asc'
+        ));
+
+        $this->hasMany('Suscriptor as Suscriptores',array(
+            'local'=>'id',
+            'foreign'=>'proceso_id',
+            'orderBy'=>'institucion asc'
+        ));
+
         $this->hasMany('Documento as Documentos',array(
             'local'=>'id',
             'foreign'=>'proceso_id',
@@ -88,7 +106,7 @@ class Proceso extends Doctrine_Record {
             $element->top=$t->posy;
             $element->start=$t->inicial;
             $element->externa=$t->externa;
-            //$element->stop=$t->final;
+            $element->stop=$t->final;
             $modelo->elements[]=clone $element;
         }
         
@@ -111,10 +129,17 @@ class Proceso extends Doctrine_Record {
     }
 
     public function getConexiones(){
-        return Doctrine_Query::create()
+        /*return Doctrine_Query::create()
             ->select('c.*')
             ->from('Conexion c, c.TareaOrigen.Proceso p1, c.TareaDestino.Proceso p2')
             ->where('(p1.activo=1 AND p2.activo=1) AND (p1.id = ? OR p2.id = ?)',array($this->id,$this->id))
+            ->execute();*/
+
+
+        return Doctrine_Query::create()
+            ->select('c.*')
+            ->from('Conexion c, c.TareaOrigen.Proceso p1')
+            ->where('p1.activo=1 AND p1.id = ?',array($this->id))
             ->execute();
     }
 
@@ -124,6 +149,7 @@ class Proceso extends Doctrine_Record {
         foreach($proceso->Tareas as $t){
             $t->Pasos;
             $t->Eventos;
+            $t->EventosExternos;
         }
 
         $proceso->Formularios;
@@ -133,6 +159,8 @@ class Proceso extends Doctrine_Record {
 
         $proceso->Acciones;
         $proceso->Documentos;
+        $proceso->Admseguridad;
+        $proceso->Suscriptores;
 
         $object=$proceso->toArray();        
         $object['Conexiones']=$proceso->getConexiones()->toArray();
@@ -145,7 +173,7 @@ class Proceso extends Doctrine_Record {
      * @param $input
      * @return Proceso
      */
-    public static function importComplete($input){
+    public static function importComplete($input, $isImport = FALSE) {
         $json=json_decode($input);
 
         //Creamos el proceso
@@ -153,9 +181,9 @@ class Proceso extends Doctrine_Record {
         $proceso->cuenta_id = UsuarioBackendSesion::usuario()->cuenta_id;
 
         //Creamos los documentos
-        foreach($json->Documentos as $f){
+        foreach($json->Documentos as $f) {
             $proceso->Documentos[$f->id]=new Documento();
-            foreach($f as $keyf => $f_attr){
+            foreach($f as $keyf => $f_attr) {
                 if($keyf != 'id' && $keyf != 'proceso_id' && $keyf != 'Proceso' && $keyf != 'hsm_configuracion_id'){
                     $proceso->Documentos[$f->id]->{$keyf}=$f_attr;
                 }
@@ -184,72 +212,139 @@ class Proceso extends Doctrine_Record {
 
         }
 
-        //Creamos las acciones
-        foreach($json->Acciones as $f){
-            $proceso->Acciones[$f->id]=new Accion();
-            foreach($f as $keyf => $f_attr){
-                if($keyf != 'id' && $keyf != 'proceso_id' && $keyf != 'Proceso'){
-                    $proceso->Acciones[$f->id]->{$keyf}=$f_attr;
+        log_message('info','Se crean acciones de nuevo proceso importado', FALSE);
+        // Creamos las acciones
+        foreach ($json->Acciones as $f) {
+            $proceso->Acciones[$f->id] = new Accion();
+            foreach ($f as $keyf => $f_attr) {
+                if ($keyf != 'id' && $keyf != 'proceso_id' && $keyf != 'Proceso') {
+                    $proceso->Acciones[$f->id]->{$keyf} = $f_attr;
                 }
             }
-
         }
+        log_message('info','Acciones creadas', FALSE);
 
         //Completamos el proceso y sus tareas
-        foreach($json as $keyp=>$p_attr){
-            if($keyp == 'Tareas'){
-                foreach($p_attr as $t){
-                    $tarea=new Tarea();
-                    foreach($t as $keyt=>$t_attr){
-                        if($keyt == 'Pasos'){
-                            foreach($t_attr as $pa){
+        foreach ($json as $keyp=>$p_attr) {
+            if ($keyp == 'Tareas') {
+                foreach ($p_attr as $t) {
+                    $tarea = new Tarea();
+                    foreach ($t as $keyt=>$t_attr) {
+                        log_message("info", "Verificando keyt: ".$keyt, FALSE);
+                        if ($keyt == 'Pasos') {
+                            foreach ($t_attr as $pa) {
                                 $paso = new Paso();
-                                foreach($pa as $keypa => $pa_attr){
-                                    if($keypa != 'id' && $keypa != 'tarea_id' && $keypa != 'Tarea' && $keypa != 'formulario_id')
-                                        $paso->{$keypa}=$pa_attr;
+                                foreach ($pa as $keypa => $pa_attr) {
+                                    if ($keypa != 'id' && $keypa != 'tarea_id' && $keypa != 'Tarea' && $keypa != 'formulario_id')
+                                        $paso->{$keypa} = $pa_attr;
                                 }
-                                $paso->Formulario=$proceso->Formularios[$pa->formulario_id];
-                                $tarea->Pasos[$pa->id]=$paso;
+                                $paso->Formulario = $proceso->Formularios[$pa->formulario_id];
+                                $tarea->Pasos[$pa->id] = $paso;
                             }
-                        }elseif($keyt=='Eventos'){
-                            foreach($t_attr as $ev){
+                        } elseif ($keyt == 'Eventos') {
+                            foreach ($t_attr as $ev) {
                                 $evento = new Evento();
-                                foreach($ev as $keyev => $ev_attr){
-                                    if($keyev != 'id' && $keyev != 'tarea_id' && $keyev != 'Tarea' && $keyev != 'accion_id' && $keyev != 'paso_id')
-                                        $evento->{$keyev}=$ev_attr;
+                                foreach ($ev as $keyev => $ev_attr) {
+                                    if ($keyev != 'id' && $keyev != 'tarea_id' && $keyev != 'Tarea' && $keyev != 'accion_id' && $keyev != 'paso_id')
+                                        $evento->{$keyev} = $ev_attr;
                                 }
-                                $evento->Accion=$proceso->Acciones[$ev->accion_id];
-                                if($ev->paso_id)$evento->Paso=$tarea->Pasos[$ev->paso_id];
-                                $tarea->Eventos[]=$evento;
+                                $evento->Accion = $proceso->Acciones[$ev->accion_id];
+                                if ($ev->paso_id)$evento->Paso = $tarea->Pasos[$ev->paso_id];
+                                $tarea->Eventos[] = $evento;
                             }
-                        }elseif($keyt != 'id' && $keyt != 'proceso_id' && $keyt != 'Proceso' && $keyt != 'grupos_usuarios'){
-                            $tarea->{$keyt}=$t_attr;
+                        } elseif ($keyt == 'EventosExternos') {
+                            log_message("info", "Agregando eventos externos", FALSE);
+                            foreach ($tarea->EventosExternos as $key => $val)
+                                unset($tarea->EventosExternos[$key]);
+                            foreach ($t_attr as $ev) {
+                                $evento_externo = new EventoExterno();
+                                foreach ($ev as $keyev => $ev_attr) {
+                                    if ($keyev != 'id' && $keyev != 'tarea_id' && $keyev != 'Tarea') {
+                                        $evento_externo->{$keyev} = $ev_attr;
+                                    }
+                                    log_message("info", "evento a agregar: ", FALSE);
+                                    log_message("info", "Id: ".$evento_externo->id, FALSE);
+                                    log_message("info", "nombre: ".$evento_externo->nombre, FALSE);
+                                    log_message("info", "metodo: ".$evento_externo->metodo, FALSE);
+                                    log_message("info", "url: ".$evento_externo->url, FALSE);
+                                    log_message("info", "mensaje: ".$evento_externo->mensaje, FALSE);
+                                    log_message("info", "regla: ".$evento_externo->regla, FALSE);
+                                    log_message("info", "tarea_id: ".$evento_externo->tarea_id, FALSE);
+                                    log_message("info", "opciones: ".$evento_externo->opciones, FALSE);
+                                    $tarea->EventosExternos[$ev->id] = $evento_externo;
+                                }
+                            }
+
+                            log_message("info", "Eventos externos agregados: ".count($tarea->EventosExternos), FALSE);
+
+                        } elseif ($keyt != 'id' && $keyt != 'proceso_id' && $keyt != 'Proceso') { // && $keyt != 'grupos_usuarios'){
+                            $tarea->{$keyt} = $t_attr;
                         }
                     }
 
-                    $proceso->Tareas[$t->id]=$tarea;
+                    $proceso->Tareas[$t->id] = $tarea;
                 }
-            }elseif($keyp=='Formularios' || $keyp=='Acciones' || $keyp=='Documentos' || $keyp=='Conexiones'){
+            } elseif ($keyp == 'Formularios' || $keyp == 'Acciones' || $keyp == 'Documentos' || $keyp == 'Conexiones' || $keyp == 'Admseguridad' || $keyp == 'Suscriptores') {
+            
+            } elseif ($keyp != 'id' && $keyp != 'cuenta_id' && $isImport == FALSE) {
 
-            }elseif($keyp != 'id' && $keyp != 'cuenta_id'){
+                log_message('debug', '$keyp [' . $keyp . '] $p_attr [' . $p_attr . '] $isImport [' . $isImport . ']');
                 $proceso->{$keyp} = $p_attr;
+
+            } elseif ($keyp != 'id' && $keyp != 'cuenta_id' && $isImport == TRUE) {
+
+                log_message('debug', '$keyp [' . $keyp . '] $p_attr [' . $p_attr . '] $isImport [' . $isImport . ']');
+
+                if ($keyp == 'nombre') {
+                    $fecha = new Datetime();
+                    $proceso->{$keyp} = $p_attr . ' (Importación: ' .  $fecha->format("d-m-Y H:i:s") . ')';
+                } elseif ($keyp == 'root') {
+                    $proceso->{$keyp} = null;
+                } elseif ($keyp == 'version') {
+                    $proceso->{$keyp} = 1;
+                } else {
+                    $proceso->{$keyp} = $p_attr;
+                }
             }
         }
 
-
-        //Hacemos las conexiones
-        foreach($json->Conexiones as $c){
-            $conexion=new Conexion();
-            $proceso->Tareas[$c->tarea_id_origen]->ConexionesOrigen[]=$conexion;
-            if($c->tarea_id_destino) $proceso->Tareas[$c->tarea_id_destino]->ConexionesDestino[]=$conexion;
-            foreach($c as $keyc => $c_attr){
+        // Hacemos las conexiones
+        foreach ($json->Conexiones as $c) {
+            $conexion = new Conexion();
+            $proceso->Tareas[$c->tarea_id_origen]->ConexionesOrigen[] = $conexion;
+            if ($c->tarea_id_destino) $proceso->Tareas[$c->tarea_id_destino]->ConexionesDestino[] = $conexion;
+            foreach ($c as $keyc => $c_attr){
                 if($keyc!='id' && $keyc != 'tarea_id_origen' && $keyc != 'tarea_id_destino'){
                     $conexion->{$keyc} = $c_attr;
                 }
             }
         }
 
-        //print_r($proceso->toArray());
+        log_message('info', 'Conexiones creadas', FALSE);
+
+        //Creamos las configuraciones de seguridad
+        foreach($json->Admseguridad as $f){
+            log_message('info','Admseguridad id: '.$f->id, FALSE);
+            $proceso->Admseguridad[$f->id] = new Seguridad();
+            log_message('info','Completando', FALSE);
+            foreach ($f as $keyf => $f_attr) {
+                if ($keyf != 'id' && $keyf != 'proceso_id' && $keyf != 'Proceso') {
+                    $proceso->Admseguridad[$f->id]->{$keyf} = $f_attr;
+                }
+            }
+        }
+        log_message('info','Seguridad creadas', FALSE);
+
+        //Creamos las configuraciones de suscriptores
+        foreach($json->Suscriptores as $f){
+            $proceso->Suscriptores[$f->id]=new Suscriptor();
+            foreach($f as $keyf => $f_attr){
+                if($keyf != 'id' && $keyf != 'proceso_id' && $keyf != 'Proceso'){
+                    $proceso->Suscriptores[$f->id]->{$keyf}=$f_attr;
+                }
+            }
+        }
+        log_message('info','Suscriptores creados', FALSE);
 
         return $proceso;
 
@@ -387,7 +482,8 @@ class Proceso extends Doctrine_Record {
     public function toPublicArray(){
         $publicArray=array(
             'id'=>(int)$this->id,
-            'nombre'=>$this->nombre
+            'nombre'=>$this->nombre,
+            'version'=>$this->version
         );
         
         return $publicArray;
@@ -448,7 +544,7 @@ class Proceso extends Doctrine_Record {
     }
 
     // Elimina los procesos de manera logica
-    public function delete($proceso_id) {
+    public function delete_logico($proceso_id) {
 
         log_message('info', 'delete test ($proceso_id [' . $proceso_id . '])');
 
@@ -456,6 +552,79 @@ class Proceso extends Doctrine_Record {
             ->update('Proceso')->set('activo', 0)
             ->where('id = ?', $proceso_id)
             ->execute();
+    }
+
+    public function findIdProcesoActivo($root, $cuenta_id) {
+
+        log_message('info', 'findIdProcesoActivo ($root [ ' . $root . '], $cuenta_id [' . $cuenta_id . '])');
+        
+        $procesos = Doctrine_Query::create()
+            ->from('Proceso p, p.Cuenta c')
+            ->where('(p.root = ? OR p.id = ?) AND p.estado="public" AND c.id = ?', array($root, $root, $cuenta_id))
+            ->execute();
+
+        return $procesos[0];
+    }
+
+    public function findProcesosArchivados($root){
+        log_message('Info', 'Buscando archivados para proceso root: '.$root);
+
+        $procesos = Doctrine_Query::create()
+            ->from('Proceso p')
+            ->where('(p.root = ? OR p.id = ?)', array($root, $root))
+            ->orderBy('p.version desc')
+            ->execute();
+
+        log_message('Info', 'Se ejecuta query procesos archivados');
+
+        $data = array();
+        foreach ($procesos as $proceso_rel){
+            $data[] = array(
+                "id" => $proceso_rel->id,
+                "nombre" => $proceso_rel->nombre.'-'.$proceso_rel->estado,
+                "version" => $proceso_rel->version
+            );
+        }
+        return $data;
+    }
+
+    public function findDraftProceso($root, $cuenta_id){
+
+        $draft = Doctrine_Query::create()
+            ->from('Proceso p, p.Cuenta c')
+            ->where('(p.root = ? OR p.id = ?) AND p.estado="draft" AND c.id = ?', array($root, $root, $cuenta_id))
+            ->execute();
+
+        return $draft[0];
+    }
+
+    public function findMaxVersion($root, $cuenta_id){
+
+        $sql = "select MAX(p.version) as version from proceso p where p.cuenta_id = $cuenta_id and (p.root = $root or p.id = $root);";
+
+        $stmn = Doctrine_Manager::getInstance()->connection();
+        $result = $stmn->execute($sql)
+            ->fetchAll();
+        return $result[0]['version'];
+    }
+
+    public function getTareasProceso(){
+        $tareas=Doctrine_Query::create()
+            ->from('Tarea t, t.Proceso p')
+            ->where('p.id = ?',$this->id)
+            ->execute();
+
+        return $tareas;
+
+    }
+
+    static function varDump($data){
+        ob_start();
+        //var_dump($data);
+        print_r($data);
+        $ret_val = ob_get_contents();
+        ob_end_clean();
+        return $ret_val;
     }
 
 }

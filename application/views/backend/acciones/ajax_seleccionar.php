@@ -11,9 +11,15 @@
         <div class="validacion"></div>
         <label>Tipo de acción</label>
         <select name="tipo">
-            <option value="enviar_correo">Enviar correo</option>
-            <option value="webservice">Consultar Webservice</option>
+            <option value="enviar_correo">Enviar Correo</option>
             <option value="variable">Generar Variable</option>
+            <option value="rest">Consultar Rest</option>
+            <option value="soap">Consultar Soap</option>
+            <option value="callback">Generar Callback</option>
+            <option value="iniciar_tramite">Iniciar Trámite</option>
+            <option value="continuar_tramite">Continuar Trámite</option>
+            <option value="webhook">Notificaciones</option>
+            <option value="descarga_documento">Descargar Documento</option>
         </select>
     </form>
 </div>

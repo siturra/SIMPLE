@@ -29,7 +29,8 @@
 						<li class="active"><a href="../index.html" title="Backend" >Backend</a><ul><li class="first"><a href="../ingreso.html" title="Ingreso" >Ingreso</a></li>
 						<li><a href="../configuracion/index.html" title="Configuración" >Configuración</a><ul><li class="first"><a href="../configuracion/inicial.html" title="Inicial" >Inicial</a></li>
 						<li><a href="../configuracion/grupos.html" title="Grupos" >Grupos</a></li>
-						<li class="last"><a href="../configuracion/usuarios.html" title="Usuarios" >Usuarios</a></li>
+						<li><a href="../configuracion/usuarios.html" title="Usuarios" >Usuarios</a></li>
+						<li class="last"><a href="../configuracion/recursos.html" title="Recursos Generales">Recursos Generales</a></li>
 						</ul></li>
 						<li class="active"><a href="index.html" title="Modelamiento del Proceso" >Modelamiento del Proceso</a><ul><li class="first"><a href="generacion-de-documentos.html" title="Generación de Documentos" >Generación de Documentos</a></li>
 						<li><a href="generacion-de-formularios.html" title="Generación de Formularios" >Generación de Formularios</a></li>
@@ -38,8 +39,11 @@
 						<li><a href="disenador.html" title="Diseñador" >Diseñador</a></li>
 						<li><a href="reportes.html" title="Reportes" >Reportes</a></li>
 						<li class="last"><a href="reglas-de-negocio-y-reglas-de-validacion.html" title="Reglas de Negocio y Reglas de Validación" >Reglas de Negocio y Reglas de Validación</a></li>
-						<!-- Arkhotech -->
 						<li><a href="../export-import.html" title="Exportar e Importar" >Exportar e importar</a></li>
+						<!-- Arkhotech -->
+						<li><a href="categorias.html" title="Categorias">Categorías</a></li>
+						<li><a href="Recursos.html" title="Asociar Recurso">Asociar Recurso a Trámite</a></li>
+						<li><a href="suscriptores-externos.html" title="Suscriptores Externos" >Suscriptores Externos</a></li>
 						<!-- Arkhotech -->
 						</ul></li>
 						<li><a href="../seguimiento-de-procesos.html" title="Seguimiento de Procesos" >Seguimiento de Procesos</a></li>
@@ -57,15 +61,26 @@
 						<li><a href="../../frontend/index.html" title="Frontend" >Frontend</a><ul><li class="first"><a href="../../frontend/ingreso/index.html" title="Ingreso" >Ingreso</a><ul><li class="first"><a href="../../frontend/ingreso/perfil-publico.html" title="Perfil Público" >Perfil Público</a></li>
 						<li><a href="../../frontend/ingreso/perfil-registrados.html" title="Perfil Registrados" >Perfil Registrados</a></li>
 						<li class="last"><a href="../../frontend/ingreso/perfil-institucional.html" title="Perfil Institucional" >Perfil Institucional</a></li>
-						<li><a href="../../frontend/agenda.html" title="Agenda">Agenda</a></li>
+						</ul>
+						<li><a href="../../frontend/nuevoHome.html" title="Nuevo Home">Nuevo Home</a></li>
+						<li><a href="../../frontend/recursos.html" title="Recursos">Recursos</a></li>
+						<li><a href="../../frontend/agenda.html" title="Agenda Front">Agenda</a></li>
 						<ul>
-							<li><a href="../../frontend/agenda-agendar.html" title="Agendar" >Agendar una cita</a></li>
+							<li><a href="../../frontend/agenda-agendar.html" title="Listar" >Agendar una cita</a></li>
 							<li><a href="../../frontend/agenda-editar.html" title="Editar">Editar/Eliminar</a></li>
-							<li><a href="../../frontend/agenda-atender.html" title="Atender" >Atender</a></li>
-							<li><a href="../../frontend/agenda-revisar.html" title="Revisar">Revisar</a></li>
-							<li><a href="../../frontend/agenda-asistencia.html" title="Marcar Asistencia">Marcar asistencia</a></li>
+							<li><a href="../../frontend/agenda-atender.html" title="Editar" >Atender</a></li>
+							<li><a href="../../frontend/agenda-revisar.html" title="Eliminar">Revisar</a></li>
+							<li><a href="../../frontend/agenda-asistencia.html" title="Asociar">Marcar asistencia</a></li>
 						</ul>
 						</ul></li>
+						<li><a href="../../manager/index.html" title="Manager">Manager</a></li>
+							<ul>	
+								<li><a href="../../manager/cuentas.html" title="Cuentas">Cuentas</a></li>
+								<li><a href="../../manager/feriados.html" title="Días Feriados">Días Feriados</a></li>
+						    	<li><a href="../../manager/categorias.html" title="Categorias">Categorías</a></li>
+						    	<li><a href="../../manager/recursos.html" title="Recursos Generales">Recursos Generales</a></li>
+							</ul>
+						</ul>
 						</ul></li>
 						</ul></li>
 						</ul>
@@ -76,7 +91,18 @@
 				  <li><a href="../../index.html">Simple</a> <span class="divider">/</span></li><li><a href="../index.html">Backend</a> <span class="divider">/</span></li><li><a href="index.html">Modelamiento del Proceso</a> <span class="divider">/</span></li><li>Acciones</li>
 				</ul>
 				<h3>2.3.3                   Acciones del proceso</h3>
-					<p>Las acciones permiten realizar eventos especiales al iniciar o finalizar una tarea del modelo de procesos, en la actualidad existen dos acciones predefinidas que se pueden utilizar al modelar el proceso, siendo el envío de correos y la consulta hacia un WebService.</p>
+					<p>Las acciones permiten realizar eventos especiales al iniciar o finalizar una tarea del modelo de procesos, en la actualidad existen nueve acciones predefinidas que se pueden utilizar al modelar el proceso, las cuales son:</p>
+					<ul>
+						<li><a href="#enviar_correo" title="Enviar Correo">Enviar Correo</a></li>
+						<li><a href="#variable" title="Generar Variable">Generar Variable</a></li>
+						<li><a href="#webservice-rest" title="Consultar Rest">Consultar Rest</a></li>
+						<li><a href="#webservice-soap" title="Consultar Soap">Consultar Soap</a></li>
+						<li><a href="#callback" title="Generar Callback">Generar Callback</a></li>
+						<li><a href="#" title="Generar Callback">Iniciar Trámite</a></li>
+						<li><a href="#" title="Generar Callback">Continuar Trámite</a></li>
+						<li><a href="#" title="Generar Callback">Notificaciones</a></li>
+						<li><a href="#" title="Generar Callback">Descargar Documento</a></li>
+					</ul>
 					<p>Para ingresar al menú de acciones simplemente haga clic sobre la pestaña <em>Acciones</em>. Como se indica en la imagen siguiente:</p>
 					<p> </p>
 					<p><img src="../../../assets/img/BackEnd/Acciones/Figura32-AC.png" alt="" width="567" height="225" /></p>
@@ -86,46 +112,15 @@
 					<ul>
 					<li>Botón <em>Nuevo </em>:
 					<ul>
-					<li>Permite añadir una acción al modelo de proceso que se encuentra trabajando, en la actualidad existen sólo dos acciones disponibles, siendo el envío de correos y la llamada hacia un WebService. Al presionar sobre el botón se abrirá una ventana que le permitirá indicar que acción desea realizar, como se ve en la imagen siguiente:</li>
+					<li>Permite añadir una acción al modelo de proceso que se encuentra trabajando. Al presionar sobre el botón se abrirá una ventana que le permitirá indicar que acción desea realizar, como se ve en la imagen siguiente:</li>
 					</ul>
 					</li>
 					</ul>
-					<p id="acciones_tipo"><img src="../../../assets/img/BackEnd/Acciones/Acciones-Tipo.png" alt="" width="558" height="158" /><br /> </p>
+					<p id="acciones_tipo"><img src="../../../assets/img/BackEnd/Acciones/Figura33-AC.png" alt="" width="558" height="158" /><br /> </p>
 					<p>Figura 33: "Nueva acción"</p>
 					<p> </p>
 
-					<h4 id="webservice">Acción WebService</h4>
-					<p>De seleccionar Consultar WebService, se desplegará la siguiente imagen:</p>
-					<p> </p>
-					<p><img src="../../../assets/img/BackEnd/Acciones/Figura34-AC.png" alt="" width="454" height="402" /></p>
-					<p>Figura 34: "Ventana para generación de Acción"</p>
-					<p> </p>
-					<p> En donde:</p>
-					<ul>
-					<li>Campo <em>Nombre</em>: Corresponde al nombre de la acción a generar.</li>
-					<li>Campo<em> URL</em>: Corresponde a la dirección del WebService que se desea consultar/ejecutar. Considere que mediante la URL indicada también podrá le podrá pasar valores por parámetro al WebService. Por ejemplo, si usted desea pasar la variable Rut como parámetro, debe escribir la URL de la siguiente forma:</li>
-					</ul>
-					<p>http://servidorweb/webservice/webservice.php?rut=@@rut</p>
-					<p> </p>
-					<p>Tenga presente, que el WebService DEBE OBLIGATORIAMENTE responder con formato JSON y aceptar consultas vía REST, siendo la salida obligatoria, con la siguiente estructura:</p>
-					<p> </p>
-					<p>{</p>
-					<p>    "variable1": "valor1",</p>
-					<p>    "variable2": "valor2",</p>
-					<p>    ...</p>
-					<p>}</p>
-					<p> </p>
-					<p>Las variables de respuesta, podrán ser utilizadas anteponiendo @@, por ejemplo, al utilizar la variable <em>@@variable2</em> informará lo que se devuelva como <em>valor2</em>.</p>
-					<p> </p>
-					<p>Para mayor información sobre el WebService que desea utilizar, acérquese al área de IT a consultar.</p>
-					<p> </p>
-					<p>Dado que nos encontramos realizando un ejemplo para la entrega de Cupón de Pago para Afiliados a CPA, uno de los WebService a requerir es para Validar la Afiliación, que nos retorne mediante el Rut si el usuario está afiliado o no. Por lo que la llamada al WebService  quedaría de la siguiente forma:</p>
-					<p> </p>
-					<p><img src="../../../assets/img/BackEnd/Acciones/Figura35-AC.png" alt="" width="454" height="386" /> </p>
-					<p>Figura 35: "Generación de Acción WebService - Ejemplo Valida Afiliación"</p>
-					<p> </p>
-					<p>Para finalizar simplemente presione Guardar.</p>
-					<p> </p>
+
 					<h4 id="enviar_correo">Acción Correo Electrónico</h4>
 					<p>Por otro lado, si selecciona <em>correo electrónico</em>,  se desplegará la siguiente ventana, en la cual simplemente debe completar los datos requeridos:</p>
 					<p> </p>
@@ -235,8 +230,320 @@
 						<b>Visualización en Seguimiento</b>
 						<p><img src="../../../assets/img/img_gen_var/img12_.png" alt="" width="100%" height="349" /></p><br/>
 
-	
+					<h4 id="webservice-rest">Acción Consultar WebService REST</h4>
+					<p>Después de seleccionar Consultar Rest, se desplegará la siguiente imagen:</p>
+					<p> </p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/Figura34-AC.png" alt="" width="454" height="402" /></p>
+					<p>Figura 34: "Ventana para generación de Acción"</p>
+					<p> </p>
+					<p> En donde:</p>
+					<ul>
+						<li>Campo <em>Nombre de la acción</em>: Corresponde al nombre de la acción a generar.</li>
+						<li>Campo<em> Variable respuesta</em>: Nombre de la variable en la cual será almacenada la respuesta del servicio.</li>
+						<li>Campo<em> Endpoint</em>: Corresponde a la dirección del host que provee el servicio.</li>
+						<li>Campo<em> Resource</em>: Corresponde a la direccion del servicio propiemente tal. Considere que mediante esta url, se le podrá valores. Por ejemplo, si usted desea pasar la variable Rut como parámetro, en caso de elegir el método GET, debe escribir la URL de la siguiente forma: http://server/resource/11111111-1</li>
+						<li>Campo<em> Método</em>: Metodos HTTP disponibles para elconsumo de servicios Rest (GET, POST, PUT, DELETE)</li>
+						<li>Campo<em> Timeout</em>: Corresponde al tiempo en segundos que SIMPLE esperará respuesta del webservices, sino dará un error de timeout. En caso de no ser seteado, por defecto su valor sera 30 seg.</li>
+						<li>Campo<em> Número reintentos</em>: En caso de existir un timeout, la accion tratará de consumir el servicio las veces que se indique en este campo, por defecto su valor es 3</li>
+						<li>Campo<em> Header</em>: Corresponde a la definición de parámetros a pasar en la cabecera de la petición</li>
+						<li>Campo<em> Seguridad</em>: Si el servicio requiere autenticación, esta será administrada en la sección de suguridad que se explicará más adelante. Este campo corresponde a la selección de la seguridad configurada.</li>
+					</ul>
+					<p>Por ejemplo, para la siguinete URL: http://servidorweb/webservice/webservice.php?rut=@@rut</p>
+ 					<p>La parte <em>http://servidorweb</em> corresponde al Endpoint. Y la parte <em>/webservice/webservice.php</em> corresponde al Resource.</p>
+					<p>Tenga presente, que el WebService DEBE OBLIGATORIAMENTE responder con formato JSON y aceptar consultas vía REST.</p>
+					<p> </p>
+					<p><h5>Trabajando con el resultado</h5></p>
+					<p>La variable de respuesta, podrá ser utilizada anteponiendo @@, por ejemplo:</p>
+					<p>Para el siguinete json de respuesta</p>
+					<p>{</p>
+					<p> "nombre":"Un nombre",</p>
+					<p> "persona":{</p>
+					<p> &nbsp;&nbsp;"edad":45</p>
+					<p>  &nbsp;}</p>
+					<p>}</p>
+					<p>Se se definió por ejemplo <em>respuesta_servicio</em> como variable de respuesta, la forma de acceder al nombre será <em>@@respuesta_servicio->nombre</em>.</p>
+					<p>Y si se requiere llegar al dato de edad, la forma de acceder será <em>@@respuesta_servicio->persona->edad</em>.</p>
+					<p> </p>
+					<p><h5>Controlando los errores</h5></p>
+					<p>Esta acción, es una función genérica de consulta a servicios rest, por lo cual la lógica de errores del servicio que se esté consumiendo, debe ser manejada con reglas de negocio según corresponda.</p>
+					<p>Para el caso de errores no controlados por el servicio, errores de conexión o timeout, estos serámn notificados en la variable de respuesta configurada con la sigueinte estructura:</p>
+					<p>{</p>
+					<p> "code" : 504, (Por ejemplo para el caso de timeout)</p>
+					<p> "desc" : "Timeout"</p>
+					<p>}</p>
+					<p> </p>
+					<p>Para mayor información sobre el WebService que desea utilizar, acérquese al área de IT a consultar.</p>
+					<p> </p>
+					<p>Para finalizar simplemente presione Guardar.</p>
+					<p> </p>
 
+					<h4 id="webservice-soap">Acción Consultar WebService SOAP</h4>
+					<p>De seleccionar Consultar SOAP, se desplegará la siguiente imagen:</p>
+					<p> </p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/Figura35-AC.png" alt="" width="454" height="402" /></p>
+					<p>Figura 35: "Ventana para generación de Acción"</p>
+					<p> </p>
+					<p> En donde:</p>
+					<ul>
+						<li>Campo <em>Nombre de la acción</em>: Corresponde al nombre de la acción a generar.</li>
+						<li>Campo<em> Variable respuesta</em>: Nombre de la variable en la cual será almacenada la respuesta del servicio.</li>
+						<li>Campo<em> WSDL</em>: URL que especifica el WSDL del servicio SOAP. Opcionalmente existe la opción de cargar un archivo wsdl a través del botón "Importar".</li>
+						<li>Campo<em> Timeout</em>: Corresponde al tiempo en segundos que SIMPLE esperará respuesta del webservices, sino dará un error de timeout</li>
+						<li>Campo<em> Número reintentos</em>: En caso de existir un timeout, la accion tratará de consumir el servicio las veces que se indique en este campo, por defecto su valor es 3</li>
+						<li>Campo<em> Métodos</em>: Una vez consultada la URL del web service o cargado el archivo wsdl, los métodos descubiertos son presentados en este listado.</li>
+						<li>Campo<em> Request</em>: En este campo, una vez seleccionado el método a consumir, se debe completar los datos a  enviar al servicio. Una forma gfácil de hacer esto, es probar el servicio con SOAPUI y copiar el request generado dentro de este campo.</li>
+						<li>Campo<em> Seguridad</em>: Si el servicio requiere autenticación, esta será administrada en la sección de suguridad que se explicará más adelante. Este campo corresponde a la selección de la seguridad configurada.</li>
+					</ul>
+					<p> </p>
+					<p>Tenga presente, que la respuesta del WebService quedará almacenada en la variable de respuesta configurada, la cual contendrá un objeto json.</p>
+					<p> </p>
+					<p><h5>Trabajando con el resultado</h5></p>
+					<p>La variable de respuesta, podrá ser utilizada anteponiendo @@, por ejemplo:</p>
+					<p>Para el siguinete json de respuesta</p>
+					<p>{</p>
+					<p> "nombre":"Un nombre",</p>
+					<p> "persona":{</p>
+					<p> &nbsp;&nbsp;"edad":45</p>
+					<p>  &nbsp;}</p>
+					<p>}</p>
+					<p>Se se definió por ejemplo <em>respuesta_servicio</em> como variable de respuesta, la forma de acceder al nombre será <em>@@respuesta_servicio->nombre</em>.</p>
+					<p>Y si se requiere llegar al dato de edad, la forma de acceder será <em>@@respuesta_servicio->persona->edad</em>.</p>
+					<p> </p>
+					<p><h5>Controlando los errores</h5></p>
+					<p>Esta acción, es una función genérica de consulta a servicios rest, por lo cual la lógica de errores del servicio que se esté consumiendo, debe ser manejada con reglas de negocio según corresponda.</p>
+					<p>Para el caso de errores no controlados por el servicio, errores de conexión o timeout, estos serámn notificados en la variable de respuesta configurada con la sigueinte estructura:</p>
+					<p>{</p>
+					<p> "code" : 504, (Por ejemplo para el caso de timeout)</p>
+					<p> "desc" : "Timeout"</p>
+					<p>}</p>
+					<p> </p>
+					<p>Para mayor información sobre el WebService que desea utilizar, acérquese al área de IT a consultar.</p>
+					<p> </p>
+					<p>Para finalizar simplemente presione Guardar.</p>
+					<p> </p>
+
+					<h4 id="webservice-seguridad">Administración de Seguridad en WebServices</h4>
+					<p>Para configurar la seguridad en el consumo de webservices REST y SOAP, es necesario seleccionar la pestaña de Seguridad, la cual se muestra en la siguiente figura:</p>
+					<p> </p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/Figura37-AC.png" alt="" width="454" height="402" /></p>
+					<p>Figura 36: "Configuración de seguridad"</p>
+					<p> </p>
+					<p> Al presionar el botón nuevo, se desplegará el siguiente formulario</p>
+					<p> </p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/Figura38-AC.png" alt="" width="454" height="402" /></p>
+					<p>Figura 37: "Ventana para configuración de seguridad"</p>
+					<p> </p>
+					<p>En donde:</p>
+					<ul>
+						<li>Campo <em>Nombre de la Institución</em>: Corresponde al nombre de la institución que provee el servicio.</li>
+						<li>Campo<em> Nombre del Servicio</em>: Corresponde al nombre del servicio que solicita mecanismos de seguridad.</li>
+						<li>Campo<em> Tipo de Seguridad</em>: Corresponde al tipo de seguridad (HTTP_BASIC, API_KEY, OAUTH2), dependiendo del tipode seguridad elegido se muestran los siguinetes campos:</li>
+						<li><em>HTTP_BASIC</em></li>
+						<ul>
+							<li>Campo<em> Usuario</em>: Corresponde al nombre de usuario con el cual se autenticará el servicio</li>
+							<li>Campo<em> Contraseña</em>: Corresponde a la contraseña del usuario para autenticar el servicio</li>
+						</ul>
+						<li><em>API_KEY</em></li>
+						<ul>
+							<li>Campo<em> Llave de aplicación (Api key)</em>: Corresponde a la key con la cual se autenticará el servicio, se debe especificar junto con la key el tipo, por ejemplo "Bearer <key>"</li>
+							<li>Campo<em> Nombre de aplicación (Name key)</em>: Corresponde al nombre de la propiedad del header, por ejemplo podría ser "X-API-Key"</li>
+						</ul>
+						<li><em>OAUTH2</em></li>
+						<ul>
+							<li>Campo<em> Endpoint</em>: Corresponde al nombre del server que provee el mecanismo de autenticación</li>
+							<li>Campo<em> Resource</em>: Corresponde a la operación que provee el token una vez validadas las credenciales</li>
+							<li>Campo<em> Request</em>: Corresponde a la petición, en donde irán las credenciales solicitadas por el servicio de autenticación</li>
+							<li>Campo<em> Client Id</em>: Corresponde al identificador del cliente que requiere autenticarse</li>
+							<li>Campo<em> Client Secret</em>: Corresponde al secreto que debe saber el cliente</li>
+							<li>Campo<em> Scope</em>: Corresponde al alcance</li>
+							<li>Campo<em> Grant Type</em>: Corresponde al nivel de permisos requerido</li>
+						</ul>
+					</ul>
+					<p> </p>
+					<p>Para mayor información sobre el WebService que desea utilizar, acérquese al área de IT a consultar.</p>
+					<p> </p>
+					<p>Para finalizar simplemente presione Guardar.</p>
+					<p> </p>
+
+					<h4 id="callback">Callback</h4>
+					<p>Al iniciar un trámite a través del API REST, existe la posibilidad de que el sistema externo envíe una URL de Callback para que el trámite, una vez llegado a cierto punto acordado por las partes, informe el resultado, esta accion se puede configurar en la siguiente pantalla:</p>
+					<p> </p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/callback.png" alt="" width="454" height="402" /></p>
+					<p>Figura 38: "Configuración de Callback"</p>
+					<p> </p>
+					<p>En donde:</p>
+					<ul>
+						<li>Campo <em>Método</em>: Corresponde al método mediante el cual espera ser accedida la URL enviada como Callback.</li>
+						<li>Campo <em>Header</em>: Corresponde a la configuración de headers que eventalmente puede esperar el servicio de Callback expuesto por el sistema externo.</li>
+						<li>Campo<em> Seguridad</em>: Si el servicio Callback enviado requiere autenticación, esta será administrada en la sección de suguridad que se explicará más adelante. Este campo corresponde a la selección de la seguridad configurada.</li>
+					</ul>
+					<p> </p>
+					<p>Para mayor información sobre el uso de Callback, acérquese al área de IT a consultar.</p>
+					<p> </p>
+					<p>Para finalizar simplemente presione Guardar.</p>
+					<p> </p>
+
+
+					<h4 id="iniciar-tramite">Acción Iniciar Trámite</h4>
+					<p>Esta acción permite iniciar otro trámite de SIMPLE desde la ejecución de un trámite. Con esta funcionalidad es posible crear subprocesos dentro de Simple.
+						Al seleccionar esta acción, se desplegará la siguiente imagen:</p>
+					<p> </p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/Figura39-AC.png" alt="" width="454" height="402" /></p>
+					<p>Figura 39: "Formulario de acción Iniciar Trámite"</p>
+					<p> </p>
+					<p> En donde:</p>
+					<ul>
+						<li>Campo <em>Nombre de la acción</em>: Corresponde al nombre de la acción a generar.</li>
+						<li>Campo <em>Cuentas</em>: Se listan las cuentas disponibles que han otorgado permisos a mi cuenta para poder iniciar procesos.</li>
+						<li>Campo <em>Trámites disponibles</em>: Se listan los trámites disponibles para iniciar pertenecientes a la cuenta seleccionada previamente.</li>
+						<li>Campo <em>Tarea desde la cual desea continuar el proceso</em>: Se listan las tareas existentes en mi proceso, en donde se debe seleccionar en cual tarea se desea que retorne la respuesta del proceso iniciado una vez que termine su ejecución.</li>
+						<li>Campo <em>Request</em>: Mensaje en formato json necesario para iniciar el trámite seleccionado.</li>
+					</ul>
+					<p> </p>
+					<p>Se debe tener en cuenta que esta acción esta muy relacionada con la acción Continuar trámite, si se desea recibir respuesta del subproceso iniciado, en el subproceso será necesario configurar una acción de Continuar trámite.
+						El comportamiento completo se puede visualizar en el siguiente diagrama de ejemplo:</p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/Figura40-AC.png" alt="" width="454" height="402" /></p>
+					<p>Figura 40: "Ejemplo subproceso SIMPLE"</p>
+					<p> </p>
+					<p>Para finalizar simplemente presione Guardar.</p>
+					<p> </p>
+					<p>Por ejemplo, supongamos que tenémos un proceso de solicitud de certificado, que necesita la ejecución de otro proceso para obtener los datos laborales de una persona.</p>
+					<p>El proceso de solicitud es el siguiente:</p>
+					<p> </p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/SolicitudCertificado.png" alt="" width="454" height="402" /></p>
+					<p>Figura 40: "Proceso de solicitud de certificado"</p>
+					<p> </p>
+					<p>Y el proceso que retorna los datos laborales de una persona es el siguiente:</p>
+					<p> </p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/EntregaDatosLaborales.png" alt="" width="454" height="402" /></p>
+					<p>Figura 41: "Proceso Entrega Datos Laborales"</p>
+					<p> </p>
+					<p>Para integrar procesos dentro de simple, se realizan las sigientes acciones:</p>
+					<ul>
+						<li>1. Primero se revisa lo que solicita de entrada el proceso que deseo iniciar desde otro trámite SIMPLE, esto se ve inspeccionando el primer formulario. Para este caso, el proceso de Entrega de datos laborales, pide los siguientes campos en su formulario de inicio:
+							<ul>
+								<li>nombre</li>
+								<li>apellido</li>
+							</ul>
+							<p> </p>
+							<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/1_subproceso.png" alt="" width="454" height="402" /></p>
+							<p>Figura 42: "Revisión subproceso a iniciar"</p>
+							<p> </p>
+							<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/1_pasos_subproceso.png" alt="" width="454" height="402" /></p>
+							<p>Figura 43: "Pasos subproceso a iniciar"</p>
+							<p> </p>
+							<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/1_formulario_inicio_subproceso.png" alt="" width="454" height="402" /></p>
+							<p>Figura 44: "Campos formulario inicio subproceso"</p>
+							<p> </p>
+						</li>
+						<li>2. Conociendo la entrada, se configura la acción Iniciar Trámite, en donde se entrega en formato Json lo solicitado por el proceso Entrega de datos laborales.
+						</li>
+						<li>3. Se indica en cual de mis tareas quiero que retorne la información que necesita mi proceso, en este caso es la tarea Datos Laborales.
+							<p> </p>
+							<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/AccionIniciarTramite.png" alt="" width="454" height="402" /></p>
+							<p>Figura 45: "Ejemplo configuracion acción Iniciar Trámite"</p>
+							<p> </p>
+						</li>
+						<li>4. Luego se indica cuando quiero que se ejecute la acción.
+							<p> </p>
+							<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/EventoIniciarTramite.png" alt="" width="454" height="402" /></p>
+							<p>Figura 46: "Ejemplo configuracion evento Iniciar Trámite"</p>
+							<p> </p>
+						</li>
+						<li>5. En el proceso Entrega de datos laborales, se configura la accion para continuar trámite, el cual continuará el proceso de Solicitud, según la configuracion de la acción Iniciar Trámite. Para este caso, como se indicó, se revisa la información que solicita la taréa Datos Laborales en su primer formulario, la cual es:
+							<ul>
+								<li>profesion</li>
+								<li>empresa</li>
+							</ul>
+							<p> </p>
+							<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/5_tarea_continuar.png" alt="" width="454" height="402" /></p>
+							<p>Figura 47: "Revisión tarea donde se continuará el proceso"</p>
+							<p> </p>
+							<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/5_formularioContinuar.png" alt="" width="454" height="402" /></p>
+							<p>Figura 48: "Formulario inicio de tarea para continuar el proceso"</p>
+							<p> </p>
+							<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/5_CamposFormContinuar.png" alt="" width="454" height="402" /></p>
+							<p>Figura 49: "Campos requeridos para continuar el proceso"</p>
+							<p> </p>
+						</li>
+						<li>6. Se configura la acción continuar trámite con la información necesaria.
+							<p> </p>
+							<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/ContinuarTramite.png" alt="" width="454" height="402" /></p>
+							<p>Figura 50: "Ejemplo configuración acción Continuar Trámite"</p>
+							<p> </p>
+						</li>
+						<li>6. Al continuar se visualiza el traspaso de información y como los procesos son ejecutados a través de los eventos configurados.</li>
+					</ul>
+
+					<p>Al ejecutar el proceso se refleja el siguinete comportamiento, primero iniciamos el proceso Solicitud de Certificado</p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/EJ_InicioSolicitud.png" alt="" width="454" height="402" /></p>
+					<p>Figura 51: "Ejemplo Iniciar y Continuar Trámite Simple"</p>
+					<p> </p>
+					<p>Se ingresa la información solicitada al iniciar el proceso de Sollicitud de Certificado</p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/EJ_2_IngresoData.png" alt="" width="454" height="402" /></p>
+					<p>Figura 52: "Ejemplo Iniciar y Continuar Trámite Simple"</p>
+					<p> </p>
+					<p>Al finalizar el paso anterior, se ejecuta la acción de iniciar trámite, esto se visualiza en el menú izquierdo, en donde se refleja que hay 2 procesos en la bandeja de entrada</p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/EJ_3_FinalizoPaso.png" alt="" width="454" height="402" /></p>
+					<p>Figura 53: "Ejemplo Iniciar y Continuar Trámite Simple"</p>
+					<p> </p>
+					<p>Luego, en la bandeja de entrada se puede visualizar el proceso principal, el cual queda esperando en la etapa Datos Laborales, y el subproceso iniciado recientemente, el cual se encuentra en la etapa Obtener profesión y empresa</p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/EJ_4_InicioSubProceso.png" alt="" width="454" height="402" /></p>
+					<p>Figura 54: "Ejemplo Iniciar y Continuar Trámite Simple"</p>
+					<p> </p>
+					<p>Al ingresar al subproceso nos muestra la información que fue entregada por el proceso principal, al iniciar el subproceso.</p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/EJ_5_VerInfoInicioSubProc.png" alt="" width="454" height="402" /></p>
+					<p>Figura 55: "Ejemplo Iniciar y Continuar Trámite Simple"</p>
+					<p> </p>
+					<p>Se avanza en el subproceso, y se completa la información solicitada, la cual posteriormente será enviada al proceso principal.</p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/EJ_6_CompletaInfoSubProc.png" alt="" width="454" height="402" /></p>
+					<p>Figura 56: "Ejemplo Iniciar y Continuar Trámite Simple"</p>
+					<p> </p>
+					<p>Se finaliza el subproceso.</p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/EJ_7_FinalizaSubProc.png" alt="" width="454" height="402" /></p>
+					<p>Figura 57: "Ejemplo Iniciar y Continuar Trámite Simple"</p>
+					<p> </p>
+					<p>El proceso principal es avanzado por el subproceso a la siguiente etapa, y se visualiza los datos entregados por el subproceso.</p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/IniciarProcesoSimple/EJ_8_VerInfoEnProcesoPadre.png" alt="" width="454" height="402" /></p>
+					<p>Figura 58: "Ejemplo Iniciar y Continuar Trámite Simple"</p>
+					<p> </p>
+
+					<p> </p>
+
+					<h4 id="continuar-tramite">Acción Continuar Trámite</h4>
+					<p>Esta acción, se debe configurar cuando sabemos que nuestro proceso esta habilitado para ser iniciado por otro trámite de SIMPLE, ya que depende de la acción Iniciar Trámite para poder ejecutarse de forma correcta.
+						Al seleccionar esta acción, se desplegará la siguiente imagen:</p>
+					<p> </p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/Figura41-AC.png" alt="" width="454" height="402" /></p>
+					<p>Figura 41: "Formulario de acción Continuar Trámite"</p>
+					<p> </p>
+					<p> En donde:</p>
+					<ul>
+						<li>Campo <em>Nombre de la acción</em>: Corresponde al nombre de la acción a generar.</li>
+						<li>Campo<em>Request</em>: Mensaje en formato json con la respuesta que será entregada al proceso padre.</li>
+					</ul>
+					<p> </p>
+					<p>Se debe tener en cuenta que los campos retornados en el request, deben existir en el formulario de entrada de la tarea que se está continuando.</p>
+					<p> </p>
+					<p>Para finalizar simplemente presione Guardar.</p>
+					<p> </p>
+
+
+					<h4 id="webhook">Acción Notificaciones</h4>
+					<p>Esta acción permite seleccionar desde el listado de suscriptores externos, a quien se quiere notificar. El contenido de la notificacion será la salida configurada para la tarea que se está editando.
+						Al seleccionar esta acción, se desplegará la siguiente imagen:</p>
+					<p> </p>
+					<p><img src="../../../assets/img/BackEnd/Acciones/Figura42-AC.png" alt="" width="454" height="402" /></p>
+					<p>Figura 42: "Formulario de Notificaciones"</p>
+					<p> </p>
+					<p> En donde:</p>
+					<ul>
+						<li>Campo <em>Nombre de la acción</em>: Corresponde al nombre de la acción a generar.</li>
+						<li>Campo<em>Suscriptores</em>: Listado de suscriptores disponibles para notificar, los cuales fueron configurados debidamente en la pestaña "Suscriptores Externos".</li>
+					</ul>
+					<p> </p>
+					<p>Para finalizar simplemente presione Guardar.</p>
+					<p> </p>
 				</div>
 			</div>
 		</div>

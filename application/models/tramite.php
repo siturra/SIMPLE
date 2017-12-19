@@ -34,7 +34,6 @@ class Tramite extends Doctrine_Record {
     }
 
     public function iniciar($proceso_id) {
-    	
     	// Aumentar el contador de Proceso
     	Doctrine_Query::create()
     	->update('Proceso p')
@@ -44,21 +43,23 @@ class Tramite extends Doctrine_Record {
     	
         $proceso = Doctrine::getTable('Proceso')->find($proceso_id);
 
-        $this->proceso_id = $proceso->id;
-        $this->pendiente = 1;
-        $this->tramite_proc_cont = $proceso->proc_cont;
+        if(isset($proceso) && strlen($proceso->id) > 0){
+            $this->proceso_id = $proceso->id;
+            $this->pendiente = 1;
+            $this->tramite_proc_cont = $proceso->proc_cont;
 
-        $etapa = new Etapa();
-        $etapa->tarea_id = $proceso->getTareaInicial(UsuarioSesion::usuario()->id)->id;
-        $etapa->pendiente = 1;
+            $etapa = new Etapa();
+            $etapa->tarea_id = $proceso->getTareaInicial(UsuarioSesion::usuario()->id)->id;
+            $etapa->pendiente = 1;
 
-        $this->Etapas[] = $etapa;
+            $this->Etapas[] = $etapa;
 
-        $this->save();
-        
+            $this->save();
 
-
-        $etapa->asignar(UsuarioSesion::usuario()->id);
+            $etapa->asignar(UsuarioSesion::usuario()->id);
+        }else{
+            throw new ApiException('Proceso no existe',404);
+        }
     }
 
     public function getEtapasParticipadas($usuario_id) {
@@ -205,5 +206,5 @@ class Tramite extends Doctrine_Record {
     			'dias_vencidos - Dias vencidos de etapas actuales del Trámite'
     	);
     }
-    
+
 }

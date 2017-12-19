@@ -95,4 +95,30 @@ class Formulario extends Doctrine_Record {
         
         return $formulario;
     }
+    /**
+    public function getEtapaIdFormFormulario(){
+        
+        $conexiones=  Doctrine_Query::create()
+                ->select('rec.city')->distinct()
+                ->from('Paso p, formulario f,etapa e')
+                ->where('f.id = p.formulario_id and e.tarea_id = p.tarea_id ' +
+                        'and f.id = ?',$this->id)
+                ->execute();
+        
+    }
+     * 
+     */
+    public function getCamposEntrada(){
+        try{
+        return $result = Doctrine_Query::create()
+            ->from('Campo c, c.Formulario f')
+          
+            ->andWhere('c.readonly = 0')
+            ->andWhere('f.id = ?', $this->id)
+            ->execute();
+        }catch(Exception $e){
+            log_message('error',$e->getMessage());
+            throw $e;
+        }       
+    }
 }

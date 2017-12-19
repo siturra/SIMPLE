@@ -11,7 +11,7 @@
 
         $("#selectGruposUsuarios").select2({tags: true});
         $("[rel=tooltip]").tooltip();
-        
+
         $(".datepicker")
         .datepicker({
             format: "dd-mm-yyyy",
@@ -19,12 +19,12 @@
             autoclose: true,
             language: "es"
         })
-        
+
         $('#formEditarTarea .nav-tabs a').click(function (e) {
             e.preventDefault();
             $(this).tab('show');
         });
-        
+
         // Permite borrar pasos
         $(".tab-pasos").on("click",".delete",function() {
             $(this).closest("tr").remove();
@@ -54,9 +54,9 @@
             html+='<a class="delete" title="Eliminar" href="#"><i class="icon-remove"></i></a>';
             html+='</td>';
             html+="</tr>";
-            
+
             $(".tab-pasos table tbody").append(html);
-            
+
             return false;
         });
 
@@ -83,7 +83,7 @@
         //Permite agregar nuevos eventos
         $(".tab-eventos .form-agregar-evento button").click(function(){
             var $form=$(".tab-eventos .form-agregar-evento");
-            
+
             var pos=1+$(".tab-eventos table tbody tr").size();
             var accionId=$form.find(".eventoAccion option:selected").val();
             var accionNombre=$form.find(".eventoAccion option:selected").text();
@@ -92,7 +92,7 @@
             var pasoId=$form.find(".eventoPasoId option:selected").val();
             var pasoNombre=$form.find(".eventoPasoId option:selected").text();
             var pasoTitle=$form.find(".eventoPasoId option:selected").attr("title");
-            
+
             var html="<tr>";
             html+="<td>"+pos+"</td>";
             html+='<td><a title="Editar" target="_blank" href="'+site_url+'backend/acciones/editar/'+accionId+'">'+accionNombre+'</td>';
@@ -107,16 +107,16 @@
             html+='<a class="delete" title="Eliminar" href="#"><i class="icon-remove"></i></a>';
             html+='</td>';
             html+="</tr>";
-            
+
             $(".tab-eventos table tbody").append(html);
-            
+
             return false;
         });
 
         //Permite agregar nuevos eventos externos
         $(".tab-eventos-externos .form-agregar-evento-externo button").click(function(){
             var $form=$(".tab-eventos-externos .form-agregar-evento-externo");
-            
+
             var pos=1+$(".tab-eventos-externos table tbody tr").size();
             var nombre=$form.find("#nombre").val();
             var metodo=$form.find(".eventoSentido option:selected").val();
@@ -124,7 +124,7 @@
             var mensaje=$form.find("#mensaje").val();
             var regla=$form.find("#regla").val();
             var opciones=$form.find("#opciones").val();
-            
+
             var html="<tr>";
             html+="<td>"+pos+"</td>";
             html+="<td>"+nombre+"</td>";
@@ -144,9 +144,9 @@
             html+='<a class="delete" title="Eliminar" href="#"><i class="icon-remove"></i></a>';
             html+='</td>';
             html+="</tr>";
-            
+
             $(".tab-eventos-externos table tbody").append(html);
-            
+
             return false;
         });
 
@@ -154,7 +154,7 @@
             $(this).closest("tr").remove();
             return false;
         });
-        
+
         //$("#modalEditarTarea form input[name=socket_id_emisor]").val(socketId);
         //$("#modalEditarTarea .botonEliminar").attr("href",function(i,href){return href+"?socket_id_emisor="+socketId;})
     });
@@ -177,6 +177,8 @@
                 <li><a href="#tab5">Eventos</a></li>
                 <li><a href="#tab6">Vencimiento</a></li>
                 <li><a href="#tab7">Otros</a></li>
+                <li><a href="#tab8">Datos</a></li>
+                <li><a href="#tab9">Cuentas</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab1">
@@ -195,21 +197,36 @@
                     <label><strong>Activación</strong></label>
                     <div class="row-fluid">
                         <div class="span6">
-                            <label class="checkbox"><input name="inicial" value="1" type="checkbox" <?= $tarea->inicial ? 'checked' : '' ?>> Tarea Inicial</label>
+                            <label class="checkbox"><input name="inicial" id="inicial" value="1" type="checkbox" <?= $tarea->inicial ? 'checked' : '' ?>> Tarea Inicial</label>
                             <label class="checkbox"><input name="final" value="1" type="checkbox" <?= $tarea->final ? 'checked' : '' ?>> Tarea Final</label>
                         </div>
                         <div class="span6">
                             <script>
-                                $(document).ready(function() {
-                                    $("input[name=activacion]").change(function() {
-                                        if ($("input[name=activacion]:checked").val() == 'entre_fechas') {
+                                function MostrarExponer() {
+                                    if($('#inicial').prop('checked')) {
+                                        $("#DivExponer").show();
+                                    }else{
+                                        $("#DivExponer").hide();
+                                        $("#exponer_tramite").prop('checked',false);
+                                    }
+                                }
+                                $(document).ready(function(){
+                                    MostrarExponer();
+                                    $("input[name=activacion]").change(function(){
+                                        if($("input[name=activacion]:checked").val()=='entre_fechas'){
                                             $("#activacionEntreFechas").show();
                                         } else {
-                                            $("#activacionEntreFechas").hide();  
+                                            $("#activacionEntreFechas").hide();
                                         }
                                     }).change();
+                                    $("#inicial").click(function() {
+                                      MostrarExponer();
+                                    });
                                 });
                             </script>
+                            <div id="DivExponer" style="display:none;">
+                                <label class="checkbox"><input name="exponer_tramite" id="exponer_tramite" value="1" type="checkbox" <?= $tarea->exponer_tramite ? 'checked' : '' ?>> Exponer trámite</label>
+                            </div>
                             <label class="radio"><input name="activacion" value="si" type="radio" <?= $tarea->activacion == 'si' ? 'checked' : '' ?>>Tarea activada</label>
                             <label class="radio"><input name="activacion" value="entre_fechas" type="radio" <?= $tarea->activacion == 'entre_fechas' ? 'checked' : '' ?>>Tarea activa entre fechas</label>
                             <div id="activacionEntreFechas" class="hide" style="margin-left: 20px;">
@@ -315,7 +332,6 @@
                     </div>
                 </div>
                 <div class="tab-pasos tab-pane" id="tab4">
-
                     <table class="table">
                         <thead>
                             <tr class="form-agregar-paso">
@@ -434,7 +450,7 @@
                                         <input type="hidden" name="eventos[<?= $key + 1 ?>][accion_id]" value="<?= $p->accion_id ?>" />
                                         <input type="hidden" name="eventos[<?= $key + 1 ?>][regla]" value="<?= $p->regla ?>" />
                                         <input type="hidden" name="eventos[<?= $key + 1 ?>][instante]" value="<?= $p->instante ?>" />
-                                        <?php 
+                                        <?php
                                             $paso_ee_id = !is_null($p->paso_id) ? $p->paso_id : $p->evento_externo_id;
                                         ?>
                                         <input type="hidden" name="eventos[<?= $key + 1 ?>][paso_id]" value="<?= $paso_ee_id ?>" />
@@ -444,7 +460,7 @@
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-                    <label class="checkbox">Para mayor información puedes consultar en el siguiente enlace. 
+                    <label class="checkbox">Para mayor información puedes consultar en el siguiente enlace.
                         <a href="/assets/ayuda/simple/backend/modelamiento-del-proceso/disenador.html#pestana_eventos" target="_blank">
                             <span class="glyphicon glyphicon-info-sign"></span>
                         </a>
@@ -459,7 +475,7 @@
                                 else
                                     $("#vencimientoConfig").hide();
                             }).change();
-                            
+
                             $("select[name=vencimiento_unidad]").change(function(){
                                 if(this.value=="D")
                                     $("#habilesConfig").show();
@@ -488,7 +504,7 @@
                         despues de completada la etapa anterior.
                         <br />
                         <label id='habilesConfig' class='checkbox'><input type='checkbox' name='vencimiento_habiles' value='1' <?=$tarea->vencimiento_habiles?'checked':''?> /> Considerar solo días habiles.</label>
-                        
+
                         <label class="checkbox"><input type="checkbox" name="vencimiento_notificar" value="1" <?=$tarea->vencimiento_notificar?'checked':''?> /> Notificar cuando quede <input class="input-mini" type="text" name="vencimiento_notificar_dias" value="<?=$tarea->vencimiento_notificar_dias?>" /> día al siguiente correo:</label>
                          <input style="margin-left: 20px;" type="text" name="vencimiento_notificar_email" placeholder="ejemplo@mail.com" value="<?=$tarea->vencimiento_notificar_email?>" />
                          <div style="margin-left: 20px;" class="help-block">Tambien se pueden usar variables. Ej: @@email</div>
@@ -593,6 +609,122 @@
                     </table>
                     </div>
                 </div>
+                <div class="tab-datos-expuestos tab-pane" id="tab8">
+                    <script>
+                        function selectAll(){
+                            $("#seleccionados").find("*").prop("selected",true);
+                        }
+
+                        function SelectAllFunction(){
+                            if($("input[name=SelectAll]:checked").val()){
+                                $(".SelectAll").prop('checked',true);
+                            }else{
+                                $(".SelectAll").prop('checked',false);
+                            }
+                        }
+
+                        function seleccionarForm(id){
+                            if($("input[name="+id+"]:checked").val()){
+                                $("."+id).prop('checked',true);
+                            }else{
+                                $("."+id).prop('checked',false);
+                            }
+                        }
+                    </script>
+
+                    <div class="row-fluid">
+                        <div class="span6"><h5>Variables de formulario
+                            <a href="/assets/ayuda/simple/backend/modelamiento-del-proceso/disenador.html#pestana_datos" target="_blank">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                            </a></h5></div>
+                        <div class="span6"><h5>Variables de proceso</h5></div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span6" style="overflow-y: auto; height:280px;width:48%;border:.5px solid;border-radius: 5px;border-color:#DDDDDD;">
+                            <?
+                                $formularios = array();
+                                $nameform = array();
+                                foreach($variablesFormularios as $key => $valuesAry){
+                                   $var = $valuesAry[nombre_formulario];
+                                   if(!in_array($var, $nameform)){
+                                      $nameform[] = $var;
+                                   }
+                                   $formIndex = array_search($var, $nameform);
+                                   $formularios[$formIndex][] = $valuesAry;
+                                }
+
+                                foreach ($formularios as $key => $res) {
+                                    $id=$key;
+                                    ?>&nbsp;<input type="checkbox" onclick="seleccionarForm(<? echo $id; ?>)" name="<? echo $id; ?>" id="<? echo $id; ?>" value="<? echo $id; ?>"/>&nbsp;<b><? echo $res[0]['nombre_formulario'];?></b><br><?
+                                    foreach ($res as $d){
+                                        ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="<? echo $id ?>" name="varForm[]" id="<? echo $d['variable_id'] ?>" value="<? echo $d['variable_id'] ?>">&nbsp;<? echo $d['nom_variables']; ?><br><?
+                                        if ($d['exponer_campo']==1){?>
+                                            <script type="text/javascript">
+                                            $("#"+<? echo $d['variable_id'] ?>).prop('checked',true);
+                                            </script>
+                                        <?}
+                                    }
+                                }
+                            ?>
+                        </div>
+                        <div class="span6" style="overflow-y: auto; height:280px;width:47%;border: 0.5px solid;border-radius: 5px;border-color:#DDDDDD;">
+                            <?php
+                                $count=count($variablesProcesos); 
+                                if($count>0){
+                                    ?>&nbsp;<input type="checkbox" onclick="SelectAllFunction();" name="SelectAll" value="0">&nbsp;<b>All</b><br><?
+                                    foreach ($variablesProcesos as $res) {
+                                        $variables = json_decode($res['extra']);
+                                        $variables = get_object_vars($variables);
+                                        ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="SelectAll" name="varPro[]" id="var<? echo $res['variable_id'] ?>" value="<? echo $res['variable_id'] ?>">&nbsp;<? echo $variables['variable'];echo " "; echo $res['exponer_varible'];  ?><br><?
+                                        if ($res['exponer_variable']==1){?>
+                                                <script type="text/javascript">
+                                                    $("#var"+<? echo $res['variable_id'] ?>).prop('checked',true);
+                                                </script>
+                                            <?}
+                                    }
+                                }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="tab-datos-expuestos tab-pane" id="tab9">
+                    <div class="row-fluid">
+                        <div class="span12"><h5>Cuentas a las que desea dar acceso para iniciar este proceso
+                                <a href="/assets/ayuda/simple/backend/modelamiento-del-proceso/disenador.html#pestana_datos" target="_blank">
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                </a></h5></div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12" style="overflow-y: auto; height:280px;width:96%;border:.5px solid;border-radius: 5px;border-color:#DDDDDD;">
+                            <div class="campo control-group">
+                            <label class="control-label">Suscriptores:</label>
+                            <div class="controls">
+                                <?foreach ($cuentas as $cuenta) {?>
+                                <label class="checkbox">
+                                    <input type="checkbox" name="cuentas_con_permiso[]" id="cuenta_<? echo $cuenta->id; ?>" value="<? echo $cuenta->id; ?>">
+                                    <? echo $cuenta->nombre;?>
+                                </label><?
+                                    foreach ($cuentas_con_permiso as $cuenta_permiso) {
+                                        if($cuenta_permiso["id"] == $cuenta->id){?>
+                                            <script type="text/javascript">
+                                                $("#cuenta_"+<? echo $cuenta->id; ?>).prop('checked',true);
+                                            </script>
+                                        <?
+                                        break;
+                                        }
+                                    }
+                                }
+                            ?>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
         </div>
     </form>

@@ -126,4 +126,24 @@ class Usuario extends Doctrine_Record {
         
         return $publicArray;
     }
+
+    public function findUsuarioPorRut($rut){
+
+        $sql = "select u.* from usuario u where u.rut ='".$rut."';";
+
+        $stmn = Doctrine_Manager::getInstance()->connection();
+        $result = $stmn->execute($sql)
+            ->fetchAll();
+        return $result;
+    }
+
+    public function findUsuarioPorUser($user){
+
+        $sql = "select u.* from usuario u where u.usuario ='".$user."';";
+
+        $stmn = Doctrine_Manager::getInstance()->connection();
+        $result = $stmn->execute($sql)
+            ->fetchAll();
+        return $result;
+    }
 }

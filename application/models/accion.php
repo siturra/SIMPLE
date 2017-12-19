@@ -1,19 +1,27 @@
 <?php
 
-class Accion extends Doctrine_Record {
+class Accion extends Doctrine_Record     {
 
-    function setTableDefinition() {        
+    function setTableDefinition() {
         $this->hasColumn('id');
         $this->hasColumn('nombre');
         $this->hasColumn('tipo');
         $this->hasColumn('extra');
         $this->hasColumn('proceso_id');
+        $this->hasColumn('exponer_variable');
 
-        
+
         $this->setSubclasses(array(
                 'AccionEnviarCorreo'  => array('tipo' => 'enviar_correo'),
                 'AccionWebservice'  => array('tipo' => 'webservice'),
-                'AccionVariable'  => array('tipo' => 'variable')
+                'AccionVariable'  => array('tipo' => 'variable'),
+                'AccionRest'  => array('tipo' => 'rest'),
+                'AccionSoap'  => array('tipo' => 'soap'),
+                'AccionCallback'  => array('tipo' => 'callback'),
+                'AccionNotificaciones'  => array('tipo' => 'webhook'),
+                'AccionIniciarTramite'  => array('tipo' => 'iniciar_tramite'),
+                'AccionContinuarTramite'  => array('tipo' => 'continuar_tramite'),
+                'AccionDescargaDocumento'  => array('tipo' => 'descarga_documento')
             )
         );
     }
@@ -25,45 +33,52 @@ class Accion extends Doctrine_Record {
             'local' => 'proceso_id',
             'foreign' => 'id'
         ));
-        
+
         $this->hasMany('Evento as Eventos', array(
             'local' => 'id',
             'foreign' => 'accion_id'
         ));
     }
-    
+
     public function displayForm(){
         return NULL;
     }
-    
+
+    public function displaySecurityForm($id_proceso){
+        return NULL;
+    }
+
     public function validateForm(){
         return;
     }
-    
+
     //Ejecuta la regla, de acuerdo a los datos del tramite tramite_id
     public function ejecutar($tramite_id){
         return;
     }
-    
+
     public function setExtra($datos_array) {
-        if ($datos_array) 
+        if ($datos_array) {
+            log_message('info','Accion.setExtra, $datos_array: ' . json_encode($datos_array));
             $this->_set('extra' , json_encode($datos_array));
-        else 
+        } else {
+            log_message('info','Accion.setExtra, $datos_array: NULL');
             $this->_set('extra' , NULL);
+        }
     }
-    
+
     public function getExtra(){
         return json_decode($this->_get('extra'));
     }
-    
+
     public function exportComplete()
-    {        
-        $accion = $this;                
+    {
+        $accion = $this;
         $object = $accion->toArray();
 
         return json_encode($object);
     }
-    
+
     /**
      * @param $input
      * @return Accion
@@ -72,9 +87,9 @@ class Accion extends Doctrine_Record {
     {
         $json = json_decode($input);
         $accion = new Accion();
-        
+
         try {
-            
+
             //Asignamos los valores a las propiedades de la Accion
             foreach ($json as $keyp => $p_attr) {
                 if ($keyp != 'id' && $keyp != 'proceso_id')
@@ -82,7 +97,7 @@ class Accion extends Doctrine_Record {
             }
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage(), $ex->getCode());
-        }                
+        }
 
         return $accion;
     }

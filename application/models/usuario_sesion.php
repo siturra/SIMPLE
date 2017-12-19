@@ -13,7 +13,7 @@ class UsuarioSesion {
         if (!isset(self::$user)) {
 
             $CI = & get_instance();
-
+            
             if (!$user_id = $CI->session->userdata('usuario_id')) {
                 return FALSE;
             }
@@ -68,6 +68,50 @@ class UsuarioSesion {
 
         return FALSE;
     }
+    
+    /**
+     * Esta operación solo es usada por la API REST
+     * @param type $usuario_o_email
+     * @param type $password
+     * @return boolean
+     */
+    public static function registrarUsuario($usuario) {
+        log_message('INFO',"UsuarioSesion - Registrando usuario ".$usuario);
+        if($usuario == NULL){
+            return NULL;
+        }
+
+        $CI = & get_instance();
+        //No se valida el usuario por que se supone validado por la API
+        $users = Doctrine::getTable('Usuario')->findByUsuarioAndOpenId($usuario, 0);
+
+        if ($users->count()==0) {
+            $users = Doctrine::getTable('Usuario')->findByEmailAndOpenId($usuario, 0);
+        }
+        if ($users->count()==0) {
+            return FALSE;
+        }
+        //Usuarios validados en cuanto a existencia de la cuenta
+        
+        $u_input = FALSE;
+        foreach ($users as $u) { 
+            if( $u->usuario == $usuario || $u->email == $usuario){
+                $u_input = $u;
+                break;
+            }
+        }
+
+        if ($u_input) {
+            //Logueamos al usuario
+            $CI->session->set_userdata('usuario_id', $u_input->id);
+            self::$user = $u_input;
+
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+    
 
     public static function validar_acceso($usuario_o_email, $password) {
         $users = Doctrine::getTable('Usuario')->findByUsuarioAndOpenId($usuario_o_email, 0);
@@ -155,6 +199,19 @@ class UsuarioSesion {
 
     public function __clone() {
         trigger_error('Clone is not allowed.', E_USER_ERROR);
+    }
+    
+    /**
+     * Crea un usuario anonimo para la capa de servicios 
+     */
+    public static function createAnonymousSession(){
+        $anonimo = new Usuario();
+        $anonimo->usuario = random_string('unique');
+        $anonimo->setPasswordWithSalt(random_string('alnum', 32));
+        $anonimo->save();
+        $CI = & get_instance();
+        $CI->session->set_userdata('usuario_id', $anonimo->id);
+        log_message('info','Usaurio no tiene registada un sesion');
     }
 
 }
