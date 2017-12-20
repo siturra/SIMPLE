@@ -18,8 +18,9 @@ class Regla {
         $CI = & get_instance();
         $CI->load->library('SaferEval');
         $resultado = FALSE;
-        if (!$errores = $CI->safereval->checkScript($new_regla, FALSE))
+        if (!$errores = $CI->safereval->checkScript($new_regla, FALSE)){
             $resultado = @eval($new_regla);
+        }
 
         return $resultado;
     }
@@ -123,6 +124,7 @@ class Regla {
         // print_r( stdClass::__set_state(array( 'region' => 'Antofagasta', 'comuna' => 'San Pedro de Atacama' )));
         // exit;
         $new_regla = $this->regla;
+        log_message("debug", "############# En getExpresionParaOutput", FALSE);
         $new_regla = preg_replace_callback('/@@(\w+)((->\w+|\[\w+\])*)/', function($match) use ($etapa_id, $evaluar) {
             $nombre_dato = $match[1];
             $accesor = isset($match[2]) ? $match[2] : '';
@@ -191,6 +193,7 @@ class Regla {
                 // Entregamos vacio
                 $valor_dato = '';
             }
+            log_message("debug", "############# 1. dato valor: ".$dato->valor, FALSE);
             return $valor_dato;
         }, $new_regla);
 
@@ -202,6 +205,7 @@ class Regla {
             $dato = Doctrine::getTable('DatoSeguimiento')->findGlobalByNombreAndProceso($nombre_dato, $etapa->Tramite->id);
             $valor_dato = json_encode($dato);
 
+            log_message("debug", "############# 2. dato valor: ".$dato->valor, FALSE);
             return $valor_dato;
         }, $new_regla);
 
