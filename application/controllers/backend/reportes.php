@@ -235,22 +235,6 @@ class Reportes extends MY_BackendController {
                 }
             }
 
-            log_message("debug", "cantidad reporte matriz", FALSE);
-            $ntramites = count($reporte->getReporteAsMatrix($params)) - 1;
-
-            log_message("debug", "cantidad trámites: ".$ntramites, FALSE);
-
-            $reporte_tabla = $reporte->getReporteAsMatrix($params, $per_page, $offset);
-
-            log_message("debug", "reporte tabla: ".$reporte_tabla, FALSE);
-
-            $this->load->library('pagination');
-            $this->pagination->initialize(array(
-                'base_url' => site_url('backend/reportes/ver/' . $reporte_id . '?query=' . $query . '&pendiente=' . $pendiente . '&created_at_desde=' . $created_at_desde . '&created_at_hasta=' . $created_at_hasta),
-                'total_rows' => $ntramites,
-                'per_page' => $per_page
-            ));
-
             foreach ($proceso->Tramites as $tramite) {
                 $etapas_cantidad = Doctrine_query::create()->from('Etapa e')->
                 where('e.tramite_id = ?', $tramite->id)->count();
@@ -299,6 +283,22 @@ class Reportes extends MY_BackendController {
             $CI->excel_xml->generateXML('reporte');
             return;
         }
+
+        log_message("debug", "cantidad reporte matriz", FALSE);
+        $ntramites = count($reporte->getReporteAsMatrix($params)) - 1;
+
+        log_message("debug", "cantidad trámites: ".$ntramites, FALSE);
+
+        $reporte_tabla = $reporte->getReporteAsMatrix($params, $per_page, $offset);
+
+        log_message("debug", "reporte tabla: ".$reporte_tabla, FALSE);
+
+        $this->load->library('pagination');
+        $this->pagination->initialize(array(
+            'base_url' => site_url('backend/reportes/ver/' . $reporte_id . '?query=' . $query . '&pendiente=' . $pendiente . '&created_at_desde=' . $created_at_desde . '&created_at_hasta=' . $created_at_hasta),
+            'total_rows' => $ntramites,
+            'per_page' => $per_page
+        ));
 
         $data['tramites_vencidos']= $tramites_vencidos;
         $data['tramites_pendientes'] = $tramites_pendientes;
