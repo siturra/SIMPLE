@@ -402,7 +402,7 @@ class Campo extends Doctrine_Record {
                     //FIX valor
                     $filename = 'uploads/datos/'.str_replace('"','',$campo->nombre);
                     $data = file_get_contents($filename);
-                    if(isset($data) && $data != ''){
+                    if(isset($data) && $data != '' && $campo->isCurrentlyVisible($etapa->id)){
                         $return[$key]=base64_encode($data);
                     }
                 }else if($campo->tipo == 'documento'){
@@ -415,7 +415,7 @@ class Campo extends Doctrine_Record {
                     if($docCompleto){
                         $file = $documento->generar($etapa->id);
                         $data = file_get_contents('uploads/documentos/'.$file->filename);
-                        if(isset($data) && $data != '') {
+                        if(isset($data) && $data != '' && $campo->isCurrentlyVisible($etapa->id)) {
                             $return[$key] = base64_encode($data);
                         }
                     }
