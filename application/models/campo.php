@@ -389,7 +389,7 @@ class Campo extends Doctrine_Record {
                 }
             }
         }
-       
+        
         $return=array();
         if(isset($campos)){
             foreach ($campos as $campo) {
@@ -406,7 +406,7 @@ class Campo extends Doctrine_Record {
                         $return[$key]=base64_encode($data);
                     }
                 }else if($campo->tipo == 'documento'){
-                    $documento = Doctrine::getTable('Documento')->findOneByProcesoId($etapa->Tarea->proceso_id);
+                    $documento = Doctrine::getTable('Documento')->findOneByNombre($campo->nombre);
                     //Revisar si variables del documento han sido reemplazadas
                     $contenido = $documento->contenido;
 
