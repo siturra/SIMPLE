@@ -496,7 +496,7 @@ class Campo extends Doctrine_Record {
             ->andWhere("d.nombre = ? ",$nombre)
             ->execute();
             if($result!= NULL && count($result) === 1){
-                return $result[0]->valor;
+                return json_decode(json_encode($result[0]->valor),true);
             }
 
         }catch(Exception $e){
