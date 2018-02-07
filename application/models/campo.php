@@ -389,7 +389,6 @@ class Campo extends Doctrine_Record {
                 }
             }
         }
-       
         $return=array();
         if(isset($campos)){
             foreach ($campos as $campo) {
@@ -402,11 +401,11 @@ class Campo extends Doctrine_Record {
                     //FIX valor
                     $filename = 'uploads/datos/'.str_replace('"','',$campo->nombre);
                     $data = file_get_contents($filename);
-                    if(isset($data) && $data != ''){
+                    if(isset($data) && $data != '' && $campo->isCurrentlyVisible($etapa->id)){
                         $return[$key]=base64_encode($data);
                     }
                 }else if($campo->tipo == 'documento'){
-                    $documento = Doctrine::getTable('Documento')->findOneByProcesoId($etapa->Tarea->proceso_id);
+                    $documento = Doctrine::getTable('Documento')->findOneByIdAndProcesoId($campo->documento_id,$etapa->Tarea->proceso_id);
                     //Revisar si variables del documento han sido reemplazadas
                     $contenido = $documento->contenido;
 
@@ -415,7 +414,7 @@ class Campo extends Doctrine_Record {
                     if($docCompleto){
                         $file = $documento->generar($etapa->id);
                         $data = file_get_contents('uploads/documentos/'.$file->filename);
-                        if(isset($data) && $data != '') {
+                        if(isset($data) && $data != '' && $campo->isCurrentlyVisible($etapa->id)) {
                             $return[$key] = base64_encode($data);
                         }
                     }
@@ -497,7 +496,7 @@ class Campo extends Doctrine_Record {
             ->andWhere("d.nombre = ? ",$nombre)
             ->execute();
             if($result!= NULL && count($result) === 1){
-                return $result[0]->valor;
+                return json_decode(json_encode($result[0]->valor),true);
             }
 
         }catch(Exception $e){
