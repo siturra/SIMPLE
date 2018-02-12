@@ -26,6 +26,12 @@
         $("#modal").modal();
         return false;
     }
+
+    function editarProceso(procesoId) {
+        $("#modal").load(site_url + "backend/procesos/ajax_editar_proceso/" + procesoId);
+        $("#modal").modal();
+        return false;
+    }
 </script>
 
 <ul class="breadcrumb">
@@ -57,7 +63,9 @@
             <td><?=$p->estado == 'public' ? 'Publicado' : 'Draft'?></td>
             <td><?=$p->version?></td>
             <td>
-                <?php if ($editar_proceso) { ?>
+                <?php if ($editar_proceso && $p->estado=='public') { ?>
+                    <a class="btn btn-primary" onclick="return editarProceso(<?=$p->id?>);" href="#"><i class="icon-white icon-edit"></i> Editar</a>
+                <?php }else{ ?>
                     <a class="btn btn-primary" href="<?=site_url('backend/procesos/editar/'.$p->id)?>"><i class="icon-white icon-edit"></i> Editar</a>
                 <?php } ?>
                 <a class="btn btn-default" href="<?=site_url('backend/procesos/exportar/'.$p->id)?>"><i class="icon icon-share"></i> Exportar</a>

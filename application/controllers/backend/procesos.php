@@ -111,13 +111,20 @@ class Procesos extends MY_BackendController {
     public function editar($proceso_id) {
 
         log_message('info', 'editar ($proceso_id [' . $proceso_id . '])');
-
         $proceso = Doctrine::getTable('Proceso')->find($proceso_id);
+
+        $CI = & get_instance();
+        if($proceso->estado!='public'){
+            $CI->session->unset_userdata('nueva_version');
+            $nueva_version = false;
+        }else{
+            $nueva_version = $CI->session->userdata('nueva_version');
+        }
 
         log_message('debug', '$proceso->estado [' . $proceso->estado . '])');
 
         // Verificar si es draft o un proceso publicado
-        if ($proceso->estado == 'public') { //no es draft
+        if ($proceso->estado == 'public' && $nueva_version) { //no es draft
             //Se crea Draft
             log_message("INFO", "Creando Draft para proceso id ".$proceso_id, FALSE);
             $proceso = $this->crearDraft($proceso);
@@ -955,6 +962,21 @@ class Procesos extends MY_BackendController {
         return $ret_val;
     }
 
+    public function ajax_editar_proceso($proceso_id) {
+        if (! in_array ( 'super', explode ( ",", UsuarioBackendSesion::usuario ()->rol ) ))
+            show_error ( 'No tiene permisos', 401 );
+
+        $proceso = Doctrine::getTable("Proceso")->find($proceso_id);
+        $data['proceso'] = $proceso;
+        $this->load->view ( 'backend/procesos/ajax_editar_proceso', $data );
+    }
+
+    public function editar_publicado($proceso_id, $publicado=0) {
+        $nueva_version = $publicado==1 ? false : true;
+        $CI = & get_instance();
+        $CI->session->set_userdata('nueva_version',$nueva_version);
+        redirect('backend/procesos/editar/'.$proceso_id);
+    }
 }
 
 
