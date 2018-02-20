@@ -130,7 +130,7 @@
             <button class = "btn btn-primary" type="button" onclick="subirOrden()"><i class="icon-white icon-chevron-up"></i></button>
 	        <button class = "btn btn-primary" type="button" onclick="bajarOrden()"><i class="icon-white icon-chevron-down"></i></button>
 	        </div>  
-        <div/>
+        </div>
         
         
         <div class="form-actions">
