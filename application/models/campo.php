@@ -411,10 +411,10 @@ class Campo extends Doctrine_Record {
 
                     $docCompleto = $this->esDocumentoCompleto($etapa->id, $contenido);
 
-                    if($docCompleto){
+                    if($docCompleto && $campo->isCurrentlyVisible($etapa->id)){
                         $file = $documento->generar($etapa->id);
                         $data = file_get_contents('uploads/documentos/'.$file->filename);
-                        if(isset($data) && $data != '' && $campo->isCurrentlyVisible($etapa->id)) {
+                        if(isset($data) && $data != '') {
                             $return[$key] = base64_encode($data);
                         }
                     }
